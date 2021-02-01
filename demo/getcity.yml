@@ -1,0 +1,25 @@
+config:
+    name: testcase description
+    variables: {}
+teststeps:
+-   name: /chinaos/buildingInfoService/api/v1/mulan/cities
+    request:
+        headers:
+            Authorization: X-CAT eyJraWQiOiJENTAwQkI2QS1EMjM0LTQxMjAtODQyRC0wQ0Q4MDQ2N0IzMTAiLCJhbGciOiJFUzI1NiJ9.eyJpc3MiOiJodHRwczovL2FwaS1zdGFnaW5nLndld29yay5jbi9jaGluYW9zL3VzZXJTZXJ2aWNlIiwiYXVkIjoibXVsYW4iLCJzdWIiOiJmZHd2ZHdlMzUyMzMtdmV3LXNlLWRmY3dlY2FyIiwiaWF0IjoxNjExODg0NzI5LCJleHAiOjE2MTE4OTE5MjksImp0aSI6IjQ5ZjBjYjVlLWY5ZmYtNDRiNi05YjBjLTBkY2Q5Njg1NTY3NyIsInVpZCI6MTAwMjM0M30.YaiCw7JN0WhKVsXFR1cdig1TmAv7YSJquJbOGTVe5f2-qcmxo7DZHB171puJc_cgMOZgerDyy-VvYrohuiRA1g
+            Sec-Fetch-Dest: empty
+            Sec-Fetch-Mode: cors
+            Sec-Fetch-Site: same-site
+            User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36
+                (KHTML, like Gecko) Chrome/88.0.4324.96 Safari/537.36
+        method: GET
+        url: https://api-int.wework.cn/chinaos/buildingInfoService/api/v1/mulan/cities
+    validate:
+    -   eq:
+        - status_code
+        - 200
+    -   eq:
+        - headers.Content-Type
+        - application/json;charset=UTF-8
+    -   eq:
+        - content.code
+        - 0

@@ -1,0 +1,57 @@
+config:
+    name: testcase description
+    variables: {}
+teststeps:
+-   name: /chinaos/buildingInfoService/api/v1/mulan/cities
+    request:
+        headers:
+            Authorization: X-CAT eyJraWQiOiJENTAwQkI2QS1EMjM0LTQxMjAtODQyRC0wQ0Q4MDQ2N0IzMTAiLCJhbGciOiJFUzI1NiJ9.eyJpc3MiOiJodHRwczovL2FwaS1zdGFnaW5nLndld29yay5jbi9jaGluYW9zL3VzZXJTZXJ2aWNlIiwiYXVkIjoibXVsYW4iLCJzdWIiOiJmZHd2ZHdlMzUyMzMtdmV3LXNlLWRmY3dlY2FyIiwiaWF0IjoxNjExODg0NzI5LCJleHAiOjE2MTE4OTE5MjksImp0aSI6IjQ5ZjBjYjVlLWY5ZmYtNDRiNi05YjBjLTBkY2Q5Njg1NTY3NyIsInVpZCI6MTAwMjM0M30.YaiCw7JN0WhKVsXFR1cdig1TmAv7YSJquJbOGTVe5f2-qcmxo7DZHB171puJc_cgMOZgerDyy-VvYrohuiRA1g
+            Content-Type: application/json;charset=UTF-8
+            Sec-Fetch-Dest: empty
+            Sec-Fetch-Mode: cors
+            Sec-Fetch-Site: same-site
+            User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36
+                (KHTML, like Gecko) Chrome/88.0.4324.96 Safari/537.36
+        json:
+            currencyType: CNY
+            districtCount: 2
+            districtList:
+            -   cityUuid: 3dfd93c4-4a55-11e9-bca7-0ec6db7d2a3c
+                nameI18n:
+                    enUS: 建邺区
+                    zhCN: 建邺区
+                    zhTW: 建邺区
+                uuid: a226642a-5c79-11eb-ab01-0242ac110002
+            -   cityUuid: 3dfd93c4-4a55-11e9-bca7-0ec6db7d2a3c
+                nameI18n:
+                    enUS: 秦淮区
+                    zhCN: 秦淮区
+                    zhTW: 秦淮区
+                uuid: a22668cd-5c79-11eb-ab01-0242ac110002
+            image:
+                type: CITY_AVATAR
+                updateTime: '2021-01-22T06:18:53+08:00'
+                url: https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/3dfd93c4-4a55-11e9-bca7-0ec6db7d2a3c.jpg
+                uuid: b388039c-5c79-11eb-ab01-0242ac110002
+            nameI18n:
+                enUS: Nanjing
+                zhCN: 南京市
+                zhTW: 南京
+            openAt: '2019-12-30T00:00:00+08:00'
+            openingBuildingCount: 3
+            regionUuid: a59a8618-1ea7-11e6-ab4a-0a488af3e541
+            status: OPENING
+            totalBuildingCount: 3
+            uuid: 3dfd93c4-4a55-11e9-bca7-0ec6db7d2a3c
+        method: PUT
+        url: https://api-int.wework.cn/chinaos/buildingInfoService/api/v1/mulan/cities
+    validate:
+    -   eq:
+        - status_code
+        - 200
+    -   eq:
+        - headers.Content-Type
+        - application/json;charset=UTF-8
+    -   eq:
+        - content.code
+        - 0
