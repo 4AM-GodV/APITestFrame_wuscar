@@ -1,6 +1,7 @@
 import requests
 import ast
 import jsonpath
+import re
 
 from common.localconfig_utils import local_config
 
@@ -20,9 +21,16 @@ class RequestsUtils():
 
     def __get(self, get_info):
         url = self.hosts + get_info["请求地址"]
+        # param_variable_list = re.findall('\\${\w+}', get_info["请求参数(get)"])
+        # if param_variable_list:
+        #     for param_variable in param_variable_list:
+        #         get_info["请求参数(get)"] = get_info["请求参数(get)"].replace(param_variable, '"%s"'%self.temp_variables.get(param_variable[2:-1]))
+        # print(get_info["请求参数(get)"])
         response = self.session.get(url=url,
-                                    params=ast.literal_eval(get_info["请求参数(get)"])
+                                    params=ast.literal_eval(get_info["请求参数(get)"]),
+                                    headers=self.headers
                                     )
+
         result = {
             'code': 0,
             'response_reason': response.reason,
@@ -30,10 +38,15 @@ class RequestsUtils():
             'response_headers': response.headers,
             'response_body': response.text
                  }
+        print(result)
         return result
 
     def __post(self, post_info):
         url = self.hosts + post_info["请求地址"]
+        # param_variable_list = re.findall('\\${\w+}', post_info["请求参数(get)"])
+        # if param_variable_list:
+        #     for param_variable in param_variable_list:
+        #      post_info["请求参数(get)"] = post_info["请求参数(get)"].replace(param_variable, '"%s"'%self.temp_variables.get(param_variable[2:-1]))
         response = self.session.post(url=url,
                                      headers=self.headers,
                                      json=ast.literal_eval(post_info["提交数据(post)"])
@@ -42,8 +55,9 @@ class RequestsUtils():
         if post_info["取值方式"] == "json取值":
             value = jsonpath.jsonpath(response.json(), post_info["取值代码"])[0]
             self.temp_variables[post_info["传值变量"]] = value
-            print(self.temp_variables)
-
+        elif post_info["取值方式"] == "正则取值":
+            value = re.findall(post_info["取值代码"], response.text)[0]
+            self.temp_variables[post_info["传值变量"]] = value
         result = {
             'code': 0,
             'response_reason': response.reason,
@@ -57,6 +71,7 @@ class RequestsUtils():
         url = self.hosts + put_info["请求地址"]
         response = self.session.put(url=url,
                                     headers=self.headers,
+                                    params=ast.literal_eval(put_info["请求参数(get)"]),
                                     json=ast.literal_eval(put_info["提交数据(post)"])
                                     )
         response.encoding = response.apparent_encoding
@@ -73,7 +88,8 @@ class RequestsUtils():
         url = self.hosts + delete_info["请求地址"]
         response = self.session.delete(url=url,
                                        headers=self.headers,
-                                       params=ast.literal_eval(delete_info["提交数据(post)"])
+                                       params=ast.literal_eval(delete_info["请求参数(get)"]),
+                                       json=ast.literal_eval(delete_info["提交数据(post)"])
                                        )
         response.encoding = response.apparent_encoding
         result = {
@@ -89,7 +105,8 @@ class RequestsUtils():
         url = self.hosts + patch_info["请求地址"]
         response = self.session.delete(url=url,
                                        headers=self.headers,
-                                       params=ast.literal_eval(patch_info["提交数据(post)"])
+                                       params=ast.literal_eval(patch_info["请求参数(get)"]),
+                                       json=ast.literal_eval(patch_info["提交数据(post)"])
                                        )
         response.encoding = response.apparent_encoding
         result = {
@@ -103,6 +120,11 @@ class RequestsUtils():
 
     def request(self, step_info):
         request_type = step_info["请求方式"]
+        param_variable_list = re.findall('\\${\w+}', step_info["请求参数(get)"])
+        if param_variable_list:
+            for param_variable in param_variable_list:
+                step_info["请求参数(get)"] = step_info["请求参数(get)"].replace(param_variable, '"%s"' % self.temp_variables.get(
+                    param_variable[2:-1]))
         if request_type == "get":
             result = self.__get(step_info)
         elif request_type == "post":
@@ -126,8 +148,11 @@ class RequestsUtils():
 
 
 if __name__ == '__main__':
-    post_info = {'测试用例编号': 'case01', '测试用例名称': '登录int环境', '用例执行': '是', '测试用例步骤': 'step_01', '接口名称': '获取token', '请求方式': 'post', '请求地址': '/chinaos/userService/api/v1/mulan/login', '请求参数(get)': '', '提交数据(post)': '{"email": "guorong.wu@wework.cn","password": "Abc12345"}', '取值方式': 'json取值', '传值变量': 'token', '取值代码': '$.data.accessToken', '期望结果类型': 'json键是否存在', '期望结果': 'access_token,expires_in'}
-    RequestsUtils().request(post_info)
+    case_info = [
+            {'测试用例编号': 'case02', '测试用例名称': '修改城市名称', '用例执行': '是', '测试用例步骤': 'step_01', '接口名称': '登录获取token', '请求方式': 'post', '请求地址': '/chinaos/userService/api/v1/mulan/login', '请求参数(get)': '', '提交数据(post)': '{"email": "guorong.wu@wework.cn","password": "Abc12345"}', '取值方式': 'json取值', '传值变量': 'token', '取值代码': '$.data.accessToken', '期望结果类型': '', '期望结果': ''},
+            {'测试用例编号': 'case02', '测试用例名称': '修改城市名称', '用例执行': '是', '测试用例步骤': 'step_02', '接口名称': '获取城市列表', '请求方式': 'get', '请求地址': '/chinaos/buildingInfoService/api/v1/mulan/cities', '请求参数(get)': '{"accessToken":${token}}', '提交数据(post)': '', '取值方式': '', '传值变量': '', '取值代码': '', '期望结果类型': '', '期望结果': ''}
+                ]
+    RequestsUtils().request_by_step(case_info)
 
 
 
