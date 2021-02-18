@@ -1,0 +1,644 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>WeWork接口自动化测试报告</title>
+    <meta name="generator" content="HTMLTestRunner 1.2.0"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link href="http://libs.baidu.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script src="http://libs.baidu.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+    <script src="https://img.hcharts.cn/highcharts/highcharts.js"></script>
+    <script src="https://img.hcharts.cn/highcharts/modules/exporting.js"></script>
+    
+<style type="text/css" media="screen">
+body        { font-family: Microsoft YaHei;padding: 20px; font-size: 100%; }
+table       { font-size: 100%; }
+.table tbody tr td{
+            vertical-align: middle;
+        }
+
+/* -- heading ---------------------------------------------------------------------- */
+.heading .description, .attribute {
+    clear: both;
+}
+
+/* --- 失败和错误合集样式 -- Gelomen --- */
+.failCollection, .errorCollection {
+    width: 100px;
+    float: left;
+}
+#failCaseOl li {
+    color: red
+}
+#errorCaseOl li {
+    color: orange
+}
+
+/* --- 打开截图特效样式 -- Gelomen --- */
+.data-img{
+    cursor:pointer
+}
+
+.pic_looper{
+    width:100%;
+    height:100%;
+    position: fixed;
+    left: 0;
+    top:0;
+    opacity: 0.6;
+    background: #000;
+    display: none;
+    z-index: 100;
+}
+
+.pic_show{
+    width:100%;
+    position:fixed;
+    left:0;
+    top:0;
+    right:0;
+    bottom:0;
+    margin:auto;
+    text-align: center;
+    display: none;
+    z-index: 100;
+}
+
+.pic_box{
+    padding:10px;
+    width:90%;
+    height:90%;
+    margin:40px auto;
+    text-align: center;
+    overflow: hidden;
+}
+
+.pic_box img{
+    width: auto;
+    height: 100%;
+    -moz-box-shadow: 0px 0px 20px 0px #000;
+    -webkit-box-shadow: 0px 0px 20px 0px #000;
+    box-shadow: 0px 0px 20px 0px #000;
+}
+
+/* --- 饼状图div样式 -- Gelomen --- */
+#container {
+    width: 450px;
+    height: 300px;
+    float: left;
+}
+
+/* -- report ------------------------------------------------------------------------ */
+#total_row  { font-weight: bold; }
+.passCase   { color: #5cb85c; }
+.failCase   { color: #d9534f; font-weight: bold; }
+.errorCase  { color: #f0ad4e; font-weight: bold; }
+.hiddenRow  { display: none; }
+.testcase   { margin-left: 2em; }
+.screenshot:link { text-decoration: none;color: deeppink; }
+.screenshot:visited { text-decoration: none;color: deeppink; }
+.screenshot:hover { text-decoration: none;color: darkcyan; }
+.screenshot:active { text-decoration: none;color: deeppink; }
+</style>
+
+</head>
+<body >
+<script language="javascript" type="text/javascript">
+
+    $(function(){
+        // 修改 失败 和 错误 用例里对应按钮的颜色ClassName为动态加载 -- Gelomen
+    	$("button").each(function () {
+    	    var text = $(this).text();
+    	    if(text == "失败"){
+    	        $(this).addClass("btn-danger")
+            }else if(text == "错误") {
+                $(this).addClass("btn-warning")
+            }
+        });
+
+        // 给失败和错误合集加样式 -- Gelomen
+        var p_attribute = $("p.attribute");
+        p_attribute.eq(4).addClass("failCollection");
+        p_attribute.eq(5).addClass("errorCollection");
+
+        // 打开截图，放大，点击任何位置可以关闭图片  -- Gelomen
+        $(".screenshot").click(function(){
+            var img = $(this).attr("img");
+            $('.pic_show img').attr('src', img);
+            $('.pic_looper').fadeIn(200);
+            $('.pic_show').fadeIn(200);
+
+            var browserHeight = $(window).height();
+            var pic_boxHeight = $(".pic_box").height();
+            var top = (browserHeight - pic_boxHeight)/2;
+            $('.pic_box').css("margin-top", top + "px")
+
+        });
+        $('.pic_looper, .pic_show').click(function(){
+            $('.pic_looper').fadeOut(200);
+            $('.pic_show').fadeOut(200)
+        });
+
+        var browserWidth = $(window).width();
+        var margin_left = browserWidth/2 - 450;
+        if(margin_left <= 240){
+            $("#container").css("margin", "auto");
+        }else {
+            $("#container").css("margin-left", margin_left + "px");
+        }
+
+        $(window).resize(function(){
+            // 改变窗口大小时，自动改变图片与顶部的距离  -- Gelomen
+            var browserHeight = $(window).height();
+            var pic_boxHeight = $(".pic_box").height();
+            var top = (browserHeight - pic_boxHeight)/2;
+            $('.pic_box').css("margin-top", top + "px");
+
+
+            // 改变窗口大小时，自动改变饼图的边距  -- Gelomen
+            var browserWidth = $(window).width();
+            var margin_left = browserWidth/2 - 450;
+            if(margin_left <= 240){
+                $("#container").css("margin", "auto");
+            }else {
+                $("#container").css("margin-left", margin_left + "px");
+            }
+        });
+
+        // 距离顶部超过浏览器窗口一屏时，回到顶部按钮才出现  -- Gelomen
+        $(window).scroll(function(){
+            var browserHeight = $(window).height();
+            var top = $(window).scrollTop();
+            if(top >= browserHeight){
+                $("#toTop").css("display", "block")
+            }else {
+                $("#toTop").css("display", "none")
+            }
+        })
+
+        // 增加回到顶部过程的动画，以看上去不会那么生硬  -- Gelomen
+        $("#toTop").click(function() {
+            $("html,body").animate({"scrollTop":0}, 700)
+        })
+
+        // 增加饼状图  -- Gelomen
+        $('#container').highcharts({
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false,
+                spacing : [0, 0, 0, 0]
+            },
+            credits: {
+                enabled: false
+            },
+            navigation: {
+                buttonOptions: {
+                    enabled: false
+                }
+            },
+            title: {
+                floating:true,
+                text: '测试结果占比'
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    colors: ['#81ca9d', '#f16d7e', '#fdc68c'],
+                    dataLabels: {
+                        enabled: true,
+                        format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                        style: {
+                            color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                        }
+                    },
+                    point: {
+                        events: {
+                            mouseOver: function(e) {  // 鼠标滑过时动态更新标题
+                                chart.setTitle({
+                                    text: e.target.name+ '\t'+ e.target.y + ' 个'
+                                });
+                            }
+                        }
+                    }
+                }
+            },
+            series: [{
+                type: 'pie',
+                innerSize: '80%',
+                name: '比例',
+                data: [
+                    ['通过', 6],
+                    {
+                        name: '失败',
+                        y: 0,
+                        sliced: true,
+                        selected: true
+                    },
+                    ['错误', 0]
+                ]
+            }]
+        }, function(c) {
+            // 环形图圆心
+            var centerY = c.series[0].center[1],
+                titleHeight = parseInt(c.title.styles.fontSize);
+            c.setTitle({
+                y:centerY + titleHeight/2
+            });
+            chart = c;
+        });
+
+        // 查看 失败 和 错误 合集链接文字切换  -- Gelomen
+        $(".showDetail").click(function () {
+            if($(this).html() == "点击查看"){
+                $(this).html("点击收起")
+            }else {
+                $(this).html("点击查看")
+            }
+        })
+    });
+
+
+output_list = Array();
+
+/*level 调整增加只显示通过用例的分类 --Findyou / 修复筛选显示bug --Gelomen
+0:Summary //all hiddenRow
+1:Failed  //pt&et hiddenRow, ft none
+2:Pass    //pt none, ft&et hiddenRow
+3:Error   //pt&ft hiddenRow, et none
+4:All     //all none
+*/
+function showCase(level) {
+    trs = document.getElementsByTagName("tr");
+    for (var i = 0; i < trs.length; i++) {
+        tr = trs[i];
+        id = tr.id;
+        if (id.substr(0,2) == 'ft') {
+            if (level == 2 || level == 0 || level == 3) {
+                tr.className = 'hiddenRow';
+            }
+            else {
+                tr.className = '';
+                // 切换筛选时只显示预览   -- Gelomen
+                $("div[id^='div_ft']").attr("class", "collapse");
+                $("div[id^='div_et']").attr("class", "collapse");
+            }
+        }
+        if (id.substr(0,2) == 'pt') {
+            if (level == 1 || level == 0 || level == 3) {
+                tr.className = 'hiddenRow';
+            }
+            else {
+                tr.className = '';
+                // 切换筛选时只显示预览   -- Gelomen
+                $("div[id^='div_ft']").attr("class", "collapse");
+                $("div[id^='div_et']").attr("class", "collapse");
+            }
+        }
+        if (id.substr(0,2) == 'et') {
+            if (level == 1 || level == 0 || level == 2) {
+                tr.className = 'hiddenRow';
+            }
+            else {
+                tr.className = '';
+                // 切换筛选时只显示预览   -- Gelomen
+                $("div[id^='div_ft']").attr("class", "collapse");
+                $("div[id^='div_et']").attr("class", "collapse");
+            }
+        }
+    }
+
+    //加入【详细】切换文字变化 --Findyou
+    detail_class=document.getElementsByClassName('detail');
+	//console.log(detail_class.length)
+	if (level == 3) {
+		for (var i = 0; i < detail_class.length; i++){
+			detail_class[i].innerHTML="收起"
+		}
+	}
+	else{
+			for (var i = 0; i < detail_class.length; i++){
+			detail_class[i].innerHTML="详细"
+		}
+	}
+}
+
+function showClassDetail(cid, count) {
+    var id_list = Array(count);
+    var toHide = 1;
+    for (var i = 0; i < count; i++) {
+        //ID修改 点 为 下划线 -Findyou
+        tid0 = 't' + cid.substr(1) + '_' + (i+1);
+        tid = 'f' + tid0;
+        tr = document.getElementById(tid);
+        if (!tr) {
+            tid = 'p' + tid0;
+            tr = document.getElementById(tid);
+            if (!tr) {
+                tid = 'e' + tid0;
+                tr = document.getElementById(tid);
+            }
+        }
+        id_list[i] = tid;
+        if (tr.className) {
+            toHide = 0;
+        }
+    }
+    for (var i = 0; i < count; i++) {
+        tid = id_list[i];
+        //修改点击无法收起的BUG，加入【详细】切换文字变化 --Findyou
+        if (toHide) {
+            document.getElementById(tid).className = 'hiddenRow';
+            document.getElementById(cid).innerText = "详细"
+        }
+        else {
+            document.getElementById(tid).className = '';
+            document.getElementById(cid).innerText = "收起"
+        }
+    }
+}
+
+function html_escape(s) {
+    s = s.replace(/&/g,'&amp;');
+    s = s.replace(/</g,'&lt;');
+    s = s.replace(/>/g,'&gt;');
+    return s;
+}
+</script>
+<div class='pic_looper'></div> <div class='pic_show'><div class='pic_box'><img src=''/></div> </div>
+<div class='heading'>
+<div style="width: 650px; float: left;">
+    <h1 style="font-family: Microsoft YaHei">WeWork接口自动化测试报告</h1>
+    <p class='attribute'><strong>测试人员 : </strong> WeWork_QA</p>
+<p class='attribute'><strong>开始时间 : </strong> 2021-02-18 13:03:17</p>
+<p class='attribute'><strong>合计耗时 : </strong> 0:00:01.914174</p>
+<p class='attribute'><strong>测试结果 : </strong> 共 6，通过 6，通过率 = 100.00%</p>
+<p class='attribute'><strong>失败用例合集 : </strong> <ol style='float: left;'>无</ol></p>
+<p class='attribute'><strong>错误用例合集 : </strong> <ol style='float: left;'>无</ol></p>
+
+    <p class='description'>**********mulan系统int环境接口测试**********</p>
+</div>
+<div id="container"></div>
+</div>
+
+
+
+<div style="width: 500px; clear: both;">
+<p id='show_detail_line'>
+<a class="btn btn-primary" href='javascript:showCase(0)'>概要{ 100.00% }</a>
+<a class="btn btn-success" href='javascript:showCase(2)'>通过{ 6 }</a>
+<a class="btn btn-danger" href='javascript:showCase(1)'>失败{ 0 }</a>
+<a class="btn btn-warning" href='javascript:showCase(3)'>错误{ 0 }</a>
+<a class="btn btn-info" href='javascript:showCase(4)'>所有{ 6 }</a>
+</p>
+</div>
+<table id='result_table' class="table table-condensed table-bordered table-hover">
+<colgroup>
+<col align='left' style="width: 300px;"/>
+<col align='right' style="width: 300px;"/>
+<col align='right' />
+<col align='right' />
+<col align='right' />
+<col align='right' />
+<col align='right' />
+<col align='right' style="width: 200px;"/>
+</colgroup>
+<tr id='header_row' class="text-center success" style="font-weight: bold;font-size: 14px;">
+    <td>用例集/测试用例</td>
+    <td>说明</td>
+    <td>总计</td>
+    <td>通过</td>
+    <td>失败</td>
+    <td>错误</td>
+    <td>耗时</td>
+    <td>详细</td>
+</tr>
+
+<tr class='passClass warning'>
+    <td>APITest_0</td>
+    <td></td>
+    <td class="text-center">1</td>
+    <td class="text-center">1</td>
+    <td class="text-center">0</td>
+    <td class="text-center">0</td>
+    <td class="text-center">0.48秒</td>
+    <td class="text-center"><a href="javascript:showClassDetail('c1',1)" class="detail" id='c1'>详细</a></td>
+</tr>
+
+    <tr id='pt1_1' class='hiddenRow'>
+        <td class='passCase' style="vertical-align: middle"><div class='testcase'>case01</div></td>
+        <td style="vertical-align: middle">登录int环境</td>
+        <td colspan='5' align='center'>
+        <!--默认收起错误信息 -Findyou
+        <button id='btn_pt1_1' type="button"  class="btn btn-xs collapsed" data-toggle="collapse" data-target='#div_pt1_1'>通过</button>
+        <div id='div_pt1_1' class="collapse">  -->
+
+        <!-- 默认展开错误信息 -Findyou /  修复失败按钮的颜色 -- Gelomen -->
+        <button id='btn_pt1_1' type="button"  class="btn btn-xs" data-toggle="collapse" data-target='#div_pt1_1'>通过</button>
+        <div id='div_pt1_1' class="collapse in">
+        <pre style="text-align:left">
+        
+pt1_1: [{'code': 0, 'response_reason': '', 'response_code': 200, 'response_headers': {'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'traceId': '3a1499c6-4b7f-4f74-bcd9-7a6bd398a963, 3a1499c6-4b7f-4f74-bcd9-7a6bd398a963', 'Date': 'Thu, 18 Feb 2021 05:03:17 GMT', 'Access-Control-Allow-Origin': '*', 'Access-Control-Expose-Headers': 'token,locale,Authorization,client-type', 'X-Kong-Upstream-Latency': '64', 'X-Kong-Proxy-Latency': '4', 'Via': 'kong/1.4.3'}, 'response_body': '{"code":0,"data":{"accessToken":"eyJraWQiOiJENTAwQkI2QS1EMjM0LTQxMjAtODQyRC0wQ0Q4MDQ2N0IzMTAiLCJhbGciOiJFUzI1NiJ9.eyJpc3MiOiJodHRwczovL2FwaS1zdGFnaW5nLndld29yay5jbi9jaGluYW9zL3VzZXJTZXJ2aWNlIiwiYXVkIjoibXVsYW4iLCJzdWIiOiI1ZmQ0NmU4OC01ZDI5LTRkMWItODY1ZS04OGY3ZjBlZmUxNzIiLCJpYXQiOjE2MTM2MjQ1OTcsImV4cCI6MTYxMzYzMTc5NywianRpIjoiYjEyZWVkMzAtNzk2Yi00NGFjLWE5Y2EtMGY3NGQ5MDRmZWU2IiwidWlkIjoxMDAyMzQzfQ.K1lFgHIIDs2Z13D98q-pEpCSsETMNSr33hBO_P0ZeALfZZoADPxaf_tHZZces1YRZKqPoEwp7eXLcLjRZf_e3w","refreshToken":"a5fb57fc-ffad-42d2-bf55-ca6635c6f845","user":{"id":1002343,"uuid":"5fd46e88-5d29-4d1b-865e-88f7f0efe172","nickname":"user","email":"guorong.wu@wework.cn","dateOfBirth":"2020-04-01","locationUuid":"6c024036-b1b6-4086-a3a7-4cfa3d2423a0","status":"ACTIVE","permissions":[{"id":9,"uuid":"23c2e6dc-3f0f-42a7-be31-bacc41267d1c","name":"库存查询","code":"mulanPage_inventorySearch"},{"id":12,"uuid":"4874db37-ba1e-4492-9038-d2de6938cf22","name":"CBP定价查询","code":"mulanPage_priceCBP"},{"id":23,"uuid":"8669d511-33bd-4035-ac77-731ef84f8ba2","name":"城市列表","code":"mulanPage_bisCity"},{"id":24,"uuid":"8d103229-af4d-4da1-8f6b-e2669565797d","name":"城市列表》编辑","code":"mulanPage_bisCityedit"},{"id":25,"uuid":"8d7a31a7-0ce4-4327-8f20-4a5afe75c2ff","name":"楼宇列表","code":"mulanPage_bisBuilding"},{"id":26,"uuid":"a2eb3ccb-4741-46ef-9723-76e80533cc40","name":"楼宇列表》编辑","code":"mulanPage_bisBuildingedit"},{"id":27,"uuid":"a60b7f4d-385e-452f-afc0-5d342e645ea7","name":"楼宇列表》管理楼层","code":"mulanPage_bisFlooredit"},{"id":28,"uuid":"abe84745-ceb5-4fc6-886d-9bf66066e63b","name":"楼宇详情","code":"mulanPage_bisBuildingdetail"},{"id":40,"uuid":"fsdfeeg-fffs-dfsd-2eef-228bcdfwdf949","name":"SS China","code":"mulanPage_sschinaChinass"},{"id":10,"uuid":"2dfc75e9-9650-4a95-80b4-4f1abf52e7c9","name":"库存管理","code":"mulanPage_inventoryManagement"},{"id":13,"uuid":"52f9ea69-b20a-4fe6-906d-b52beaa19549","name":"定价管理","code":"mulanPage_priceManagement"},{"id":7,"uuid":"1e6f566a-74b2-4fee-88ad-035486a1785e","name":"打印管理","code":"mulanPage_communityPrint"},{"id":8,"uuid":"21f005c2-c92e-4c0d-96a3-67a012f4fc5f","name":"播放系统管理","code":"mulanPage_communityPlayer"},{"id":33,"uuid":"d60aed18-0272-4b8f-99fd-2c06f8e0726e","name":"楼宇详情》服务设施编辑","code":"mulanPage_bisService"},{"id":1,"uuid":"0967ffad-1d43-47b2-b073-6129cf59be1a","name":"会员目录","code":"mulanPage_memberList"},{"id":14,"uuid":"53ff201d-c7df-43ea-bc32-eaf38a5ff5f3","name":"门禁组权限","code":"mulanPage_doorsAuthorization"},{"id":30,"uuid":"d0b23bef-6541-4198-87a6-59caaf409380","name":"楼宇详情》服务团队编辑","code":"mulanPage_bisTeam"},{"id":29,"uuid":"affa4bfa-92c2-4598-80b5-030c380f91fa","name":"官网管理","code":"mulanPage_bisWebsite"},{"id":32,"uuid":"d5098059-a68e-45ce-9019-fe9f64462fa3","name":"楼宇详情》空间特色编辑","code":"mulanPage_bisAmenity"},{"id":36,"uuid":"e3d96f5f-62e2-40bc-a4c9-a205eb92898d","name":"楼宇详情》图片管理编辑","code":"mulanPage_bisImages"},{"id":2,"uuid":"0c775220-4436-4fcb-91f4-228bc9adf949","name":"活动日历","code":"mulanPage_communityEvent"},{"id":3,"uuid":"105725b0-1c3b-4714-aa98-f67a8ebecbab","name":"访客管理","code":"mulanPage_communityVisitor"},{"id":4,"uuid":"1634ec07-aad7-409f-96c7-8ec55ed7a9c4","name":"公告列表","code":"mulanPage_communityAnnouncement"},{"id":5,"uuid":"17b72495-e04c-4666-856c-9a703a76bc09","name":"会议室预订","code":"mulanPage_communityRooms"},{"id":6,"uuid":"1d7dcbcd-a3a2-4d6d-9fd9-f43917867adc","name":"搬入搬出管理","code":"mulanPage_communityMIMO"},{"id":11,"uuid":"3c463963-a9a8-4ee5-b0f7-514425ff61ca","name":"会议室管理","code":"mulanPage_inventoryRooms"},{"id":15,"uuid":"6661cd20-228b-4962-81b8-5f2897bf87ac","name":"订单查询","code":"mulanPage_ordersSearch"},{"id":16,"uuid":"690c579a-5388-4377-92ad-1e853eb07106","name":"账户","code":"mulanPage_financeAccounts"},{"id":17,"uuid":"6990bad4-df0e-4810-a12d-774036eff876","name":"账单","code":"mulanPage_financeInvoice"},{"id":18,"uuid":"69d20058-732a-42f7-989e-a0399ebe776b","name":"对账","code":"mulanPage_financePosting"},{"id":19,"uuid":"6d8e7869-fc6f-47d1-a5b4-1c5e30d2678e","name":"退租","code":"mulanPage_financeMoveout"},{"id":20,"uuid":"6e855a30-eb5a-4aa9-aba6-06f0839861f0","name":"VRN管理","code":"mulanPage_financeVRN"},{"id":21,"uuid":"7d1c7ea7-9fe0-41e3-90fd-1710b8cc50c8","name":"权限管理","code":"mulanPage_authorizationManagement"},{"id":22,"uuid":"82132ca9-072c-4b9a-9b5a-a8b062beae3c","name":"权限角色管理","code":"mulanPage_authorizationRole"},{"id":37,"uuid":"ee0cc00f-75d1-487f-b0cd-3332d58f7d5d","name":"公司列表","code":"mulanPage_creditCompany"},{"id":38,"uuid":"f7e7bc80-924d-4c92-9918-e683ee3c3c4e","name":"积分明细","code":"mulanPage_creditDetail"},{"id":34,"uuid":"d678c39d-1435-48ea-9a2c-78a58649ba98","name":"楼宇详情》时间信息编辑","code":"mulanPage_bisOpentime"},{"id":39,"uuid":"ffe672e5-d18e-44ed-9f4a-bdbfac924683","name":"公司积分明细","code":"mulanPage_creditCompanydetail"},{"id":31,"uuid":"d12aef22-851b-4a12-9349-9e8f4bc20aee","name":"楼宇详情》交通信息编辑","code":"mulanPage_bisTransit"},{"id":35,"uuid":"dd047aa1-1822-45e1-8858-5df585461827","name":"楼宇详情》规则指南编辑","code":"mulanPage_bisRule"}]}},"msg":""}', 'check_result': True, 'message': ''}]
+[]
+
+
+        </pre>
+        </div>
+        </td>
+        <td class='passCase' style="vertical-align: middle"></td>
+    </tr>
+    
+<tr class='passClass warning'>
+    <td>APITest_1</td>
+    <td></td>
+    <td class="text-center">1</td>
+    <td class="text-center">1</td>
+    <td class="text-center">0</td>
+    <td class="text-center">0</td>
+    <td class="text-center">0.24秒</td>
+    <td class="text-center"><a href="javascript:showClassDetail('c2',1)" class="detail" id='c2'>详细</a></td>
+</tr>
+
+    <tr id='pt2_1' class='hiddenRow'>
+        <td class='passCase' style="vertical-align: middle"><div class='testcase'>case02</div></td>
+        <td style="vertical-align: middle">获取城市列表</td>
+        <td colspan='5' align='center'>
+        <!--默认收起错误信息 -Findyou
+        <button id='btn_pt2_1' type="button"  class="btn btn-xs collapsed" data-toggle="collapse" data-target='#div_pt2_1'>通过</button>
+        <div id='div_pt2_1' class="collapse">  -->
+
+        <!-- 默认展开错误信息 -Findyou /  修复失败按钮的颜色 -- Gelomen -->
+        <button id='btn_pt2_1' type="button"  class="btn btn-xs" data-toggle="collapse" data-target='#div_pt2_1'>通过</button>
+        <div id='div_pt2_1' class="collapse in">
+        <pre style="text-align:left">
+        
+pt2_1: [{'code': 0, 'response_reason': '', 'response_code': 200, 'response_headers': {'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'traceId': '2dbafa1a-c0e1-41bb-bab8-9683debad5d7, 2dbafa1a-c0e1-41bb-bab8-9683debad5d7', 'Date': 'Thu, 18 Feb 2021 05:03:18 GMT', 'Access-Control-Allow-Origin': '*', 'Access-Control-Expose-Headers': 'token,locale,Authorization,client-type', 'X-Kong-Upstream-Latency': '90', 'X-Kong-Proxy-Latency': '0', 'Via': 'kong/1.4.3'}, 'response_body': '{"code":0,"data":[{"uuid":"3dfd93c4-4a55-11e9-bca7-0ec6db7d2a3c","nameI18n":{"zhCN":"南京市","enUS":"Nanjing","zhTW":"南京"},"districtList":[{"uuid":"a226642a-5c79-11eb-ab01-0242ac110002","cityUuid":"3dfd93c4-4a55-11e9-bca7-0ec6db7d2a3c","nameI18n":{"zhCN":"建邺区","enUS":"建邺区","zhTW":"建邺区"}},{"uuid":"a22668cd-5c79-11eb-ab01-0242ac110002","cityUuid":"3dfd93c4-4a55-11e9-bca7-0ec6db7d2a3c","nameI18n":{"zhCN":"秦淮区","enUS":"秦淮区","zhTW":"秦淮区"}}],"status":"OPENING","openAt":"2019-12-30T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":3,"openingBuildingCount":3,"currencyType":"CNY","image":{"uuid":"b388039c-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/3dfd93c4-4a55-11e9-bca7-0ec6db7d2a3c.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":2},{"uuid":"c22c32c2-cbe8-11e8-900c-1202be33576a","nameI18n":{"zhCN":"苏州","enUS":"Suzhou","zhTW":"蘇州"},"districtList":[{"uuid":"a226629f-5c79-11eb-ab01-0242ac110002","cityUuid":"c22c32c2-cbe8-11e8-900c-1202be33576a","nameI18n":{"zhCN":"工业园区","enUS":"gongyeyuanuq","zhTW":"工业园区"}}],"status":"OPENING","openAt":"2019-08-01T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":1,"openingBuildingCount":1,"currencyType":"CNY","image":{"uuid":"b3880ade-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/c22c32c2-cbe8-11e8-900c-1202be33576a.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":1},{"uuid":"1bdaea76-4a55-11e9-8d49-0ec6db7d2a3c","nameI18n":{"zhCN":"台北","enUS":"Taipei","zhTW":"台北"},"districtList":[{"uuid":"a2266367-5c79-11eb-ab01-0242ac110002","cityUuid":"1bdaea76-4a55-11e9-8d49-0ec6db7d2a3c","nameI18n":{"zhCN":"信义区","enUS":"信义区","zhTW":"信义区"}}],"status":"OPENING","openAt":"2019-07-15T00:00:00+08:00","regionUuid":"8edf34c2-31b8-11e6-85d9-0a488af3e541","totalBuildingCount":1,"openingBuildingCount":1,"currencyType":"TWD","image":{"uuid":"b387ffcf-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/1bdaea76-4a55-11e9-8d49-0ec6db7d2a3c.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":1},{"uuid":"6169b3a6-4041-11e9-85c5-1202be33576a","nameI18n":{"zhCN":"西安","enUS":"Xi\'an","zhTW":"西安"},"districtList":[{"uuid":"a2266114-5c79-11eb-ab01-0242ac110002","cityUuid":"6169b3a6-4041-11e9-85c5-1202be33576a","nameI18n":{"zhCN":"碑林区","enUS":"beilinqu","zhTW":"碑林区"}},{"uuid":"a22664f4-5c79-11eb-ab01-0242ac110002","cityUuid":"6169b3a6-4041-11e9-85c5-1202be33576a","nameI18n":{"zhCN":"未央区","enUS":"未央区","zhTW":"未央区"}},{"uuid":"a226680a-5c79-11eb-ab01-0242ac110002","cityUuid":"6169b3a6-4041-11e9-85c5-1202be33576a","nameI18n":{"zhCN":"曲江新区","enUS":"曲江新区","zhTW":"曲江新区"}}],"status":"OPENING","openAt":"2019-07-01T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":3,"openingBuildingCount":3,"currencyType":"CNY","image":{"uuid":"b388061b-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/6169b3a6-4041-11e9-85c5-1202be33576a.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":3},{"uuid":"f4deee90-cbe7-11e8-872a-1202be33576a","nameI18n":{"zhCN":"武汉","enUS":"Wuhan","zhTW":"武漢"},"districtList":[{"uuid":"a22656c8-5c79-11eb-ab01-0242ac110002","cityUuid":"f4deee90-cbe7-11e8-872a-1202be33576a","nameI18n":{"zhCN":"江汉区","enUS":"jianghanqu","zhTW":"江汉区"}},{"uuid":"a22661d7-5c79-11eb-ab01-0242ac110002","cityUuid":"f4deee90-cbe7-11e8-872a-1202be33576a","nameI18n":{"zhCN":"洪山区","enUS":"hongshanqu","zhTW":"洪山区"}}],"status":"OPENING","openAt":"2019-01-28T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":2,"openingBuildingCount":2,"currencyType":"CNY","image":{"uuid":"b3880d42-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/f4deee90-cbe7-11e8-872a-1202be33576a.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":2},{"uuid":"1722c1d6-9f1d-11e8-ab41-1202be33576a","nameI18n":{"zhCN":"广州","enUS":"Guangzhou","zhTW":"廣州"},"districtList":[{"uuid":"a22655fe-5c79-11eb-ab01-0242ac110002","cityUuid":"1722c1d6-9f1d-11e8-ab41-1202be33576a","nameI18n":{"zhCN":"越秀区","enUS":"yuexiuqu","zhTW":"越秀区"}},{"uuid":"a2265fda-5c79-11eb-ab01-0242ac110002","cityUuid":"1722c1d6-9f1d-11e8-ab41-1202be33576a","nameI18n":{"zhCN":"天河区","enUS":"tianhequ","zhTW":"天河区"}}],"status":"OPENING","openAt":"2019-01-01T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":5,"openingBuildingCount":5,"currencyType":"CNY","image":{"uuid":"b387fd83-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/1722c1d6-9f1d-11e8-ab41-1202be33576a.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":2},{"uuid":"b7fae85c-591f-11e8-b904-1202be33576a","nameI18n":{"zhCN":"杭州","enUS":"Hangzhou","zhTW":"杭州"},"districtList":[{"uuid":"a2263d40-5c79-11eb-ab01-0242ac110002","cityUuid":"b7fae85c-591f-11e8-b904-1202be33576a","nameI18n":{"zhCN":"上城区","enUS":"shangchengqu","zhTW":"上城区"}},{"uuid":"a2265859-5c79-11eb-ab01-0242ac110002","cityUuid":"b7fae85c-591f-11e8-b904-1202be33576a","nameI18n":{"zhCN":"西湖区","enUS":"xihuqu","zhTW":"西湖区"}},{"uuid":"a2265cfb-5c79-11eb-ab01-0242ac110002","cityUuid":"b7fae85c-591f-11e8-b904-1202be33576a","nameI18n":{"zhCN":"下城区","enUS":"xiachengqu","zhTW":"下城区"}},{"uuid":"a22665b8-5c79-11eb-ab01-0242ac110002","cityUuid":"b7fae85c-591f-11e8-b904-1202be33576a","nameI18n":{"zhCN":"江干区","enUS":"江干区","zhTW":"江干区"}}],"status":"OPENING","openAt":"2018-10-08T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":6,"openingBuildingCount":6,"currencyType":"CNY","image":{"uuid":"b388074b-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/b7fae85c-591f-11e8-b904-1202be33576a.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":4},{"uuid":"d0debd32-70c4-11e8-8f42-1202be33576a","nameI18n":{"zhCN":"深圳","enUS":"Shenzhen","zhTW":"深圳"},"districtList":[{"uuid":"a2263bec-5c79-11eb-ab01-0242ac110002","cityUuid":"d0debd32-70c4-11e8-8f42-1202be33576a","nameI18n":{"zhCN":"南山区","enUS":"nanshanqu","zhTW":"南山区"}},{"uuid":"a2265536-5c79-11eb-ab01-0242ac110002","cityUuid":"d0debd32-70c4-11e8-8f42-1202be33576a","nameI18n":{"zhCN":"福田区","enUS":"futianqu","zhTW":"福田区"}}],"status":"OPENING","openAt":"2018-09-03T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":8,"openingBuildingCount":8,"currencyType":"CNY","image":{"uuid":"b3880c0f-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/d0debd32-70c4-11e8-8f42-1202be33576a.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":2},{"uuid":"35da2f60-7583-11e8-8b3e-1202be33576a","nameI18n":{"zhCN":"成都","enUS":"Chengdu","zhTW":"成都"},"districtList":[{"uuid":"a2263c6c-5c79-11eb-ab01-0242ac110002","cityUuid":"35da2f60-7583-11e8-8b3e-1202be33576a","nameI18n":{"zhCN":"锦江区","enUS":"jinjiangqu","zhTW":"锦江区"}},{"uuid":"a2263ed0-5c79-11eb-ab01-0242ac110002","cityUuid":"35da2f60-7583-11e8-8b3e-1202be33576a","nameI18n":{"zhCN":"青羊区","enUS":"qingyangqu","zhTW":"青羊区"}},{"uuid":"a2265793-5c79-11eb-ab01-0242ac110002","cityUuid":"35da2f60-7583-11e8-8b3e-1202be33576a","nameI18n":{"zhCN":"武侯区","enUS":"wuhouqu","zhTW":"武侯区"}}],"status":"OPENING","openAt":"2018-09-01T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":6,"openingBuildingCount":6,"currencyType":"CNY","image":{"uuid":"b3880120-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/35da2f60-7583-11e8-8b3e-1202be33576a.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":3},{"uuid":"4626d4f9-5157-43c5-8fa8-f7436674a03c","nameI18n":{"zhCN":"北京","enUS":"Beijing","zhTW":"北京"},"districtList":[{"uuid":"a2263727-5c79-11eb-ab01-0242ac110002","cityUuid":"4626d4f9-5157-43c5-8fa8-f7436674a03c","nameI18n":{"zhCN":"朝阳区","enUS":"chaoyangqu","zhTW":"朝阳区"}},{"uuid":"a2263a6c-5c79-11eb-ab01-0242ac110002","cityUuid":"4626d4f9-5157-43c5-8fa8-f7436674a03c","nameI18n":{"zhCN":"海淀区","enUS":"haidianqu","zhTW":"海淀区"}},{"uuid":"a2263b31-5c79-11eb-ab01-0242ac110002","cityUuid":"4626d4f9-5157-43c5-8fa8-f7436674a03c","nameI18n":{"zhCN":"西城区","enUS":"xichengqu","zhTW":"西城区"}},{"uuid":"a2263e06-5c79-11eb-ab01-0242ac110002","cityUuid":"4626d4f9-5157-43c5-8fa8-f7436674a03c","nameI18n":{"zhCN":"东城区","enUS":"dongchengqu","zhTW":"东城区"}}],"status":"OPENING","openAt":"2017-04-01T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":27,"openingBuildingCount":27,"currencyType":"CNY","image":{"uuid":"b38804e3-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/4626d4f9-5157-43c5-8fa8-f7436674a03c.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":4},{"uuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"香港","enUS":"Hong Kong","zhTW":"香港"},"districtList":[{"uuid":"a2264bf5-5c79-11eb-ab01-0242ac110002","cityUuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"铜锣湾","enUS":"tongluowan","zhTW":"铜锣湾"}},{"uuid":"a2265052-5c79-11eb-ab01-0242ac110002","cityUuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"湾仔","enUS":"wanzai","zhTW":"湾仔"}},{"uuid":"a22651db-5c79-11eb-ab01-0242ac110002","cityUuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"鰂鱼涌","enUS":"zeiyuchong","zhTW":"鰂鱼涌"}},{"uuid":"a226546c-5c79-11eb-ab01-0242ac110002","cityUuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"中环","enUS":"zhonghuan","zhTW":"中环"}},{"uuid":"a2265a83-5c79-11eb-ab01-0242ac110002","cityUuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"西营盘","enUS":"xiyingpan","zhTW":"西营盘"}},{"uuid":"a2265bca-5c79-11eb-ab01-0242ac110002","cityUuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"中西区","enUS":"zhongxiqu","zhTW":"中西区"}},{"uuid":"a2265c7a-5c79-11eb-ab01-0242ac110002","cityUuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"观塘","enUS":"guantang","zhTW":"观塘"}},{"uuid":"a226667d-5c79-11eb-ab01-0242ac110002","cityUuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"尖沙咀","enUS":"尖沙咀","zhTW":"尖沙咀"}},{"uuid":"a226673f-5c79-11eb-ab01-0242ac110002","cityUuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"九龙湾","enUS":"九龙湾","zhTW":"九龙湾"}}],"status":"OPENING","openAt":"2016-09-01T00:00:00+08:00","regionUuid":"73581d48-6ad3-11e9-bd85-0ec6db7d2a3c","totalBuildingCount":18,"openingBuildingCount":18,"currencyType":"HKD","image":{"uuid":"b38809aa-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/be16956c-bd23-4015-89f2-132812e07005.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":9},{"uuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"上海","enUS":"Shanghai","zhTW":"上海"},"districtList":[{"uuid":"a22633de-5c79-11eb-ab01-0242ac110002","cityUuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"黄浦区","enUS":"huangpuqu","zhTW":"黄浦区"}},{"uuid":"a2263589-5c79-11eb-ab01-0242ac110002","cityUuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"静安区","enUS":"jinganqu","zhTW":"静安区"}},{"uuid":"a2263804-5c79-11eb-ab01-0242ac110002","cityUuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"徐汇区","enUS":"xuhuiqu","zhTW":"徐汇区"}},{"uuid":"a22638d2-5c79-11eb-ab01-0242ac110002","cityUuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"浦东新区","enUS":"pudongxinqu","zhTW":"浦东新区"}},{"uuid":"a226399d-5c79-11eb-ab01-0242ac110002","cityUuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"杨浦区","enUS":"yangpuqu","zhTW":"杨浦区"}},{"uuid":"a2264b4c-5c79-11eb-ab01-0242ac110002","cityUuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"虹口区","enUS":"hongkouqu","zhTW":"虹口区"}},{"uuid":"a226591f-5c79-11eb-ab01-0242ac110002","cityUuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"闵行区","enUS":"minhangqu","zhTW":"闵行区"}},{"uuid":"a22659e3-5c79-11eb-ab01-0242ac110002","cityUuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"普陀区","enUS":"putuoqu","zhTW":"普陀区"}},{"uuid":"a2265aff-5c79-11eb-ab01-0242ac110002","cityUuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"长宁区","enUS":"changningqu","zhTW":"长宁区"}}],"status":"OPENING","openAt":"2015-12-01T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":57,"openingBuildingCount":57,"currencyType":"CNY","image":{"uuid":"b388087c-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/bcccbdcd-9a23-4586-81cd-378d9e2cbae5.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":9}]}', 'check_result': True, 'message': ''}]
+[]
+
+
+        </pre>
+        </div>
+        </td>
+        <td class='passCase' style="vertical-align: middle"></td>
+    </tr>
+    
+<tr class='passClass warning'>
+    <td>APITest_2</td>
+    <td></td>
+    <td class="text-center">1</td>
+    <td class="text-center">1</td>
+    <td class="text-center">0</td>
+    <td class="text-center">0</td>
+    <td class="text-center">0.23秒</td>
+    <td class="text-center"><a href="javascript:showClassDetail('c3',1)" class="detail" id='c3'>详细</a></td>
+</tr>
+
+    <tr id='pt3_1' class='hiddenRow'>
+        <td class='passCase' style="vertical-align: middle"><div class='testcase'>case03</div></td>
+        <td style="vertical-align: middle">获取城市列表</td>
+        <td colspan='5' align='center'>
+        <!--默认收起错误信息 -Findyou
+        <button id='btn_pt3_1' type="button"  class="btn btn-xs collapsed" data-toggle="collapse" data-target='#div_pt3_1'>通过</button>
+        <div id='div_pt3_1' class="collapse">  -->
+
+        <!-- 默认展开错误信息 -Findyou /  修复失败按钮的颜色 -- Gelomen -->
+        <button id='btn_pt3_1' type="button"  class="btn btn-xs" data-toggle="collapse" data-target='#div_pt3_1'>通过</button>
+        <div id='div_pt3_1' class="collapse in">
+        <pre style="text-align:left">
+        
+pt3_1: [{'code': 0, 'response_reason': '', 'response_code': 200, 'response_headers': {'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'traceId': '17a67ad9-c1a1-4b1f-ae52-ea426e763521, 17a67ad9-c1a1-4b1f-ae52-ea426e763521', 'Date': 'Thu, 18 Feb 2021 05:03:18 GMT', 'Access-Control-Allow-Origin': '*', 'Access-Control-Expose-Headers': 'token,locale,Authorization,client-type', 'X-Kong-Upstream-Latency': '82', 'X-Kong-Proxy-Latency': '1', 'Via': 'kong/1.4.3'}, 'response_body': '{"code":0,"data":[{"uuid":"3dfd93c4-4a55-11e9-bca7-0ec6db7d2a3c","nameI18n":{"zhCN":"南京市","enUS":"Nanjing","zhTW":"南京"},"districtList":[{"uuid":"a226642a-5c79-11eb-ab01-0242ac110002","cityUuid":"3dfd93c4-4a55-11e9-bca7-0ec6db7d2a3c","nameI18n":{"zhCN":"建邺区","enUS":"建邺区","zhTW":"建邺区"}},{"uuid":"a22668cd-5c79-11eb-ab01-0242ac110002","cityUuid":"3dfd93c4-4a55-11e9-bca7-0ec6db7d2a3c","nameI18n":{"zhCN":"秦淮区","enUS":"秦淮区","zhTW":"秦淮区"}}],"status":"OPENING","openAt":"2019-12-30T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":3,"openingBuildingCount":3,"currencyType":"CNY","image":{"uuid":"b388039c-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/3dfd93c4-4a55-11e9-bca7-0ec6db7d2a3c.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":2},{"uuid":"c22c32c2-cbe8-11e8-900c-1202be33576a","nameI18n":{"zhCN":"苏州","enUS":"Suzhou","zhTW":"蘇州"},"districtList":[{"uuid":"a226629f-5c79-11eb-ab01-0242ac110002","cityUuid":"c22c32c2-cbe8-11e8-900c-1202be33576a","nameI18n":{"zhCN":"工业园区","enUS":"gongyeyuanuq","zhTW":"工业园区"}}],"status":"OPENING","openAt":"2019-08-01T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":1,"openingBuildingCount":1,"currencyType":"CNY","image":{"uuid":"b3880ade-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/c22c32c2-cbe8-11e8-900c-1202be33576a.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":1},{"uuid":"1bdaea76-4a55-11e9-8d49-0ec6db7d2a3c","nameI18n":{"zhCN":"台北","enUS":"Taipei","zhTW":"台北"},"districtList":[{"uuid":"a2266367-5c79-11eb-ab01-0242ac110002","cityUuid":"1bdaea76-4a55-11e9-8d49-0ec6db7d2a3c","nameI18n":{"zhCN":"信义区","enUS":"信义区","zhTW":"信义区"}}],"status":"OPENING","openAt":"2019-07-15T00:00:00+08:00","regionUuid":"8edf34c2-31b8-11e6-85d9-0a488af3e541","totalBuildingCount":1,"openingBuildingCount":1,"currencyType":"TWD","image":{"uuid":"b387ffcf-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/1bdaea76-4a55-11e9-8d49-0ec6db7d2a3c.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":1},{"uuid":"6169b3a6-4041-11e9-85c5-1202be33576a","nameI18n":{"zhCN":"西安","enUS":"Xi\'an","zhTW":"西安"},"districtList":[{"uuid":"a2266114-5c79-11eb-ab01-0242ac110002","cityUuid":"6169b3a6-4041-11e9-85c5-1202be33576a","nameI18n":{"zhCN":"碑林区","enUS":"beilinqu","zhTW":"碑林区"}},{"uuid":"a22664f4-5c79-11eb-ab01-0242ac110002","cityUuid":"6169b3a6-4041-11e9-85c5-1202be33576a","nameI18n":{"zhCN":"未央区","enUS":"未央区","zhTW":"未央区"}},{"uuid":"a226680a-5c79-11eb-ab01-0242ac110002","cityUuid":"6169b3a6-4041-11e9-85c5-1202be33576a","nameI18n":{"zhCN":"曲江新区","enUS":"曲江新区","zhTW":"曲江新区"}}],"status":"OPENING","openAt":"2019-07-01T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":3,"openingBuildingCount":3,"currencyType":"CNY","image":{"uuid":"b388061b-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/6169b3a6-4041-11e9-85c5-1202be33576a.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":3},{"uuid":"f4deee90-cbe7-11e8-872a-1202be33576a","nameI18n":{"zhCN":"武汉","enUS":"Wuhan","zhTW":"武漢"},"districtList":[{"uuid":"a22656c8-5c79-11eb-ab01-0242ac110002","cityUuid":"f4deee90-cbe7-11e8-872a-1202be33576a","nameI18n":{"zhCN":"江汉区","enUS":"jianghanqu","zhTW":"江汉区"}},{"uuid":"a22661d7-5c79-11eb-ab01-0242ac110002","cityUuid":"f4deee90-cbe7-11e8-872a-1202be33576a","nameI18n":{"zhCN":"洪山区","enUS":"hongshanqu","zhTW":"洪山区"}}],"status":"OPENING","openAt":"2019-01-28T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":2,"openingBuildingCount":2,"currencyType":"CNY","image":{"uuid":"b3880d42-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/f4deee90-cbe7-11e8-872a-1202be33576a.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":2},{"uuid":"1722c1d6-9f1d-11e8-ab41-1202be33576a","nameI18n":{"zhCN":"广州","enUS":"Guangzhou","zhTW":"廣州"},"districtList":[{"uuid":"a22655fe-5c79-11eb-ab01-0242ac110002","cityUuid":"1722c1d6-9f1d-11e8-ab41-1202be33576a","nameI18n":{"zhCN":"越秀区","enUS":"yuexiuqu","zhTW":"越秀区"}},{"uuid":"a2265fda-5c79-11eb-ab01-0242ac110002","cityUuid":"1722c1d6-9f1d-11e8-ab41-1202be33576a","nameI18n":{"zhCN":"天河区","enUS":"tianhequ","zhTW":"天河区"}}],"status":"OPENING","openAt":"2019-01-01T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":5,"openingBuildingCount":5,"currencyType":"CNY","image":{"uuid":"b387fd83-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/1722c1d6-9f1d-11e8-ab41-1202be33576a.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":2},{"uuid":"b7fae85c-591f-11e8-b904-1202be33576a","nameI18n":{"zhCN":"杭州","enUS":"Hangzhou","zhTW":"杭州"},"districtList":[{"uuid":"a2263d40-5c79-11eb-ab01-0242ac110002","cityUuid":"b7fae85c-591f-11e8-b904-1202be33576a","nameI18n":{"zhCN":"上城区","enUS":"shangchengqu","zhTW":"上城区"}},{"uuid":"a2265859-5c79-11eb-ab01-0242ac110002","cityUuid":"b7fae85c-591f-11e8-b904-1202be33576a","nameI18n":{"zhCN":"西湖区","enUS":"xihuqu","zhTW":"西湖区"}},{"uuid":"a2265cfb-5c79-11eb-ab01-0242ac110002","cityUuid":"b7fae85c-591f-11e8-b904-1202be33576a","nameI18n":{"zhCN":"下城区","enUS":"xiachengqu","zhTW":"下城区"}},{"uuid":"a22665b8-5c79-11eb-ab01-0242ac110002","cityUuid":"b7fae85c-591f-11e8-b904-1202be33576a","nameI18n":{"zhCN":"江干区","enUS":"江干区","zhTW":"江干区"}}],"status":"OPENING","openAt":"2018-10-08T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":6,"openingBuildingCount":6,"currencyType":"CNY","image":{"uuid":"b388074b-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/b7fae85c-591f-11e8-b904-1202be33576a.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":4},{"uuid":"d0debd32-70c4-11e8-8f42-1202be33576a","nameI18n":{"zhCN":"深圳","enUS":"Shenzhen","zhTW":"深圳"},"districtList":[{"uuid":"a2263bec-5c79-11eb-ab01-0242ac110002","cityUuid":"d0debd32-70c4-11e8-8f42-1202be33576a","nameI18n":{"zhCN":"南山区","enUS":"nanshanqu","zhTW":"南山区"}},{"uuid":"a2265536-5c79-11eb-ab01-0242ac110002","cityUuid":"d0debd32-70c4-11e8-8f42-1202be33576a","nameI18n":{"zhCN":"福田区","enUS":"futianqu","zhTW":"福田区"}}],"status":"OPENING","openAt":"2018-09-03T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":8,"openingBuildingCount":8,"currencyType":"CNY","image":{"uuid":"b3880c0f-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/d0debd32-70c4-11e8-8f42-1202be33576a.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":2},{"uuid":"35da2f60-7583-11e8-8b3e-1202be33576a","nameI18n":{"zhCN":"成都","enUS":"Chengdu","zhTW":"成都"},"districtList":[{"uuid":"a2263c6c-5c79-11eb-ab01-0242ac110002","cityUuid":"35da2f60-7583-11e8-8b3e-1202be33576a","nameI18n":{"zhCN":"锦江区","enUS":"jinjiangqu","zhTW":"锦江区"}},{"uuid":"a2263ed0-5c79-11eb-ab01-0242ac110002","cityUuid":"35da2f60-7583-11e8-8b3e-1202be33576a","nameI18n":{"zhCN":"青羊区","enUS":"qingyangqu","zhTW":"青羊区"}},{"uuid":"a2265793-5c79-11eb-ab01-0242ac110002","cityUuid":"35da2f60-7583-11e8-8b3e-1202be33576a","nameI18n":{"zhCN":"武侯区","enUS":"wuhouqu","zhTW":"武侯区"}}],"status":"OPENING","openAt":"2018-09-01T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":6,"openingBuildingCount":6,"currencyType":"CNY","image":{"uuid":"b3880120-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/35da2f60-7583-11e8-8b3e-1202be33576a.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":3},{"uuid":"4626d4f9-5157-43c5-8fa8-f7436674a03c","nameI18n":{"zhCN":"北京","enUS":"Beijing","zhTW":"北京"},"districtList":[{"uuid":"a2263727-5c79-11eb-ab01-0242ac110002","cityUuid":"4626d4f9-5157-43c5-8fa8-f7436674a03c","nameI18n":{"zhCN":"朝阳区","enUS":"chaoyangqu","zhTW":"朝阳区"}},{"uuid":"a2263a6c-5c79-11eb-ab01-0242ac110002","cityUuid":"4626d4f9-5157-43c5-8fa8-f7436674a03c","nameI18n":{"zhCN":"海淀区","enUS":"haidianqu","zhTW":"海淀区"}},{"uuid":"a2263b31-5c79-11eb-ab01-0242ac110002","cityUuid":"4626d4f9-5157-43c5-8fa8-f7436674a03c","nameI18n":{"zhCN":"西城区","enUS":"xichengqu","zhTW":"西城区"}},{"uuid":"a2263e06-5c79-11eb-ab01-0242ac110002","cityUuid":"4626d4f9-5157-43c5-8fa8-f7436674a03c","nameI18n":{"zhCN":"东城区","enUS":"dongchengqu","zhTW":"东城区"}}],"status":"OPENING","openAt":"2017-04-01T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":27,"openingBuildingCount":27,"currencyType":"CNY","image":{"uuid":"b38804e3-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/4626d4f9-5157-43c5-8fa8-f7436674a03c.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":4},{"uuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"香港","enUS":"Hong Kong","zhTW":"香港"},"districtList":[{"uuid":"a2264bf5-5c79-11eb-ab01-0242ac110002","cityUuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"铜锣湾","enUS":"tongluowan","zhTW":"铜锣湾"}},{"uuid":"a2265052-5c79-11eb-ab01-0242ac110002","cityUuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"湾仔","enUS":"wanzai","zhTW":"湾仔"}},{"uuid":"a22651db-5c79-11eb-ab01-0242ac110002","cityUuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"鰂鱼涌","enUS":"zeiyuchong","zhTW":"鰂鱼涌"}},{"uuid":"a226546c-5c79-11eb-ab01-0242ac110002","cityUuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"中环","enUS":"zhonghuan","zhTW":"中环"}},{"uuid":"a2265a83-5c79-11eb-ab01-0242ac110002","cityUuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"西营盘","enUS":"xiyingpan","zhTW":"西营盘"}},{"uuid":"a2265bca-5c79-11eb-ab01-0242ac110002","cityUuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"中西区","enUS":"zhongxiqu","zhTW":"中西区"}},{"uuid":"a2265c7a-5c79-11eb-ab01-0242ac110002","cityUuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"观塘","enUS":"guantang","zhTW":"观塘"}},{"uuid":"a226667d-5c79-11eb-ab01-0242ac110002","cityUuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"尖沙咀","enUS":"尖沙咀","zhTW":"尖沙咀"}},{"uuid":"a226673f-5c79-11eb-ab01-0242ac110002","cityUuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"九龙湾","enUS":"九龙湾","zhTW":"九龙湾"}}],"status":"OPENING","openAt":"2016-09-01T00:00:00+08:00","regionUuid":"73581d48-6ad3-11e9-bd85-0ec6db7d2a3c","totalBuildingCount":18,"openingBuildingCount":18,"currencyType":"HKD","image":{"uuid":"b38809aa-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/be16956c-bd23-4015-89f2-132812e07005.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":9},{"uuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"上海","enUS":"Shanghai","zhTW":"上海"},"districtList":[{"uuid":"a22633de-5c79-11eb-ab01-0242ac110002","cityUuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"黄浦区","enUS":"huangpuqu","zhTW":"黄浦区"}},{"uuid":"a2263589-5c79-11eb-ab01-0242ac110002","cityUuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"静安区","enUS":"jinganqu","zhTW":"静安区"}},{"uuid":"a2263804-5c79-11eb-ab01-0242ac110002","cityUuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"徐汇区","enUS":"xuhuiqu","zhTW":"徐汇区"}},{"uuid":"a22638d2-5c79-11eb-ab01-0242ac110002","cityUuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"浦东新区","enUS":"pudongxinqu","zhTW":"浦东新区"}},{"uuid":"a226399d-5c79-11eb-ab01-0242ac110002","cityUuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"杨浦区","enUS":"yangpuqu","zhTW":"杨浦区"}},{"uuid":"a2264b4c-5c79-11eb-ab01-0242ac110002","cityUuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"虹口区","enUS":"hongkouqu","zhTW":"虹口区"}},{"uuid":"a226591f-5c79-11eb-ab01-0242ac110002","cityUuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"闵行区","enUS":"minhangqu","zhTW":"闵行区"}},{"uuid":"a22659e3-5c79-11eb-ab01-0242ac110002","cityUuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"普陀区","enUS":"putuoqu","zhTW":"普陀区"}},{"uuid":"a2265aff-5c79-11eb-ab01-0242ac110002","cityUuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"长宁区","enUS":"changningqu","zhTW":"长宁区"}}],"status":"OPENING","openAt":"2015-12-01T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":57,"openingBuildingCount":57,"currencyType":"CNY","image":{"uuid":"b388087c-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/bcccbdcd-9a23-4586-81cd-378d9e2cbae5.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":9}]}', 'check_result': True, 'message': ''}]
+[]
+
+
+        </pre>
+        </div>
+        </td>
+        <td class='passCase' style="vertical-align: middle"></td>
+    </tr>
+    
+<tr class='passClass warning'>
+    <td>APITest_3</td>
+    <td></td>
+    <td class="text-center">1</td>
+    <td class="text-center">1</td>
+    <td class="text-center">0</td>
+    <td class="text-center">0</td>
+    <td class="text-center">0.22秒</td>
+    <td class="text-center"><a href="javascript:showClassDetail('c4',1)" class="detail" id='c4'>详细</a></td>
+</tr>
+
+    <tr id='pt4_1' class='hiddenRow'>
+        <td class='passCase' style="vertical-align: middle"><div class='testcase'>case04</div></td>
+        <td style="vertical-align: middle">获取城市列表</td>
+        <td colspan='5' align='center'>
+        <!--默认收起错误信息 -Findyou
+        <button id='btn_pt4_1' type="button"  class="btn btn-xs collapsed" data-toggle="collapse" data-target='#div_pt4_1'>通过</button>
+        <div id='div_pt4_1' class="collapse">  -->
+
+        <!-- 默认展开错误信息 -Findyou /  修复失败按钮的颜色 -- Gelomen -->
+        <button id='btn_pt4_1' type="button"  class="btn btn-xs" data-toggle="collapse" data-target='#div_pt4_1'>通过</button>
+        <div id='div_pt4_1' class="collapse in">
+        <pre style="text-align:left">
+        
+pt4_1: [{'code': 0, 'response_reason': '', 'response_code': 200, 'response_headers': {'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'traceId': '4e2d7870-aa9d-4fbe-81d8-4dc814f2da82, 4e2d7870-aa9d-4fbe-81d8-4dc814f2da82', 'Date': 'Thu, 18 Feb 2021 05:03:18 GMT', 'Access-Control-Allow-Origin': '*', 'Access-Control-Expose-Headers': 'token,locale,Authorization,client-type', 'X-Kong-Upstream-Latency': '84', 'X-Kong-Proxy-Latency': '0', 'Via': 'kong/1.4.2'}, 'response_body': '{"code":0,"data":[{"uuid":"3dfd93c4-4a55-11e9-bca7-0ec6db7d2a3c","nameI18n":{"zhCN":"南京市","enUS":"Nanjing","zhTW":"南京"},"districtList":[{"uuid":"a226642a-5c79-11eb-ab01-0242ac110002","cityUuid":"3dfd93c4-4a55-11e9-bca7-0ec6db7d2a3c","nameI18n":{"zhCN":"建邺区","enUS":"建邺区","zhTW":"建邺区"}},{"uuid":"a22668cd-5c79-11eb-ab01-0242ac110002","cityUuid":"3dfd93c4-4a55-11e9-bca7-0ec6db7d2a3c","nameI18n":{"zhCN":"秦淮区","enUS":"秦淮区","zhTW":"秦淮区"}}],"status":"OPENING","openAt":"2019-12-30T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":3,"openingBuildingCount":3,"currencyType":"CNY","image":{"uuid":"b388039c-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/3dfd93c4-4a55-11e9-bca7-0ec6db7d2a3c.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":2},{"uuid":"c22c32c2-cbe8-11e8-900c-1202be33576a","nameI18n":{"zhCN":"苏州","enUS":"Suzhou","zhTW":"蘇州"},"districtList":[{"uuid":"a226629f-5c79-11eb-ab01-0242ac110002","cityUuid":"c22c32c2-cbe8-11e8-900c-1202be33576a","nameI18n":{"zhCN":"工业园区","enUS":"gongyeyuanuq","zhTW":"工业园区"}}],"status":"OPENING","openAt":"2019-08-01T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":1,"openingBuildingCount":1,"currencyType":"CNY","image":{"uuid":"b3880ade-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/c22c32c2-cbe8-11e8-900c-1202be33576a.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":1},{"uuid":"1bdaea76-4a55-11e9-8d49-0ec6db7d2a3c","nameI18n":{"zhCN":"台北","enUS":"Taipei","zhTW":"台北"},"districtList":[{"uuid":"a2266367-5c79-11eb-ab01-0242ac110002","cityUuid":"1bdaea76-4a55-11e9-8d49-0ec6db7d2a3c","nameI18n":{"zhCN":"信义区","enUS":"信义区","zhTW":"信义区"}}],"status":"OPENING","openAt":"2019-07-15T00:00:00+08:00","regionUuid":"8edf34c2-31b8-11e6-85d9-0a488af3e541","totalBuildingCount":1,"openingBuildingCount":1,"currencyType":"TWD","image":{"uuid":"b387ffcf-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/1bdaea76-4a55-11e9-8d49-0ec6db7d2a3c.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":1},{"uuid":"6169b3a6-4041-11e9-85c5-1202be33576a","nameI18n":{"zhCN":"西安","enUS":"Xi\'an","zhTW":"西安"},"districtList":[{"uuid":"a2266114-5c79-11eb-ab01-0242ac110002","cityUuid":"6169b3a6-4041-11e9-85c5-1202be33576a","nameI18n":{"zhCN":"碑林区","enUS":"beilinqu","zhTW":"碑林区"}},{"uuid":"a22664f4-5c79-11eb-ab01-0242ac110002","cityUuid":"6169b3a6-4041-11e9-85c5-1202be33576a","nameI18n":{"zhCN":"未央区","enUS":"未央区","zhTW":"未央区"}},{"uuid":"a226680a-5c79-11eb-ab01-0242ac110002","cityUuid":"6169b3a6-4041-11e9-85c5-1202be33576a","nameI18n":{"zhCN":"曲江新区","enUS":"曲江新区","zhTW":"曲江新区"}}],"status":"OPENING","openAt":"2019-07-01T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":3,"openingBuildingCount":3,"currencyType":"CNY","image":{"uuid":"b388061b-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/6169b3a6-4041-11e9-85c5-1202be33576a.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":3},{"uuid":"f4deee90-cbe7-11e8-872a-1202be33576a","nameI18n":{"zhCN":"武汉","enUS":"Wuhan","zhTW":"武漢"},"districtList":[{"uuid":"a22656c8-5c79-11eb-ab01-0242ac110002","cityUuid":"f4deee90-cbe7-11e8-872a-1202be33576a","nameI18n":{"zhCN":"江汉区","enUS":"jianghanqu","zhTW":"江汉区"}},{"uuid":"a22661d7-5c79-11eb-ab01-0242ac110002","cityUuid":"f4deee90-cbe7-11e8-872a-1202be33576a","nameI18n":{"zhCN":"洪山区","enUS":"hongshanqu","zhTW":"洪山区"}}],"status":"OPENING","openAt":"2019-01-28T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":2,"openingBuildingCount":2,"currencyType":"CNY","image":{"uuid":"b3880d42-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/f4deee90-cbe7-11e8-872a-1202be33576a.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":2},{"uuid":"1722c1d6-9f1d-11e8-ab41-1202be33576a","nameI18n":{"zhCN":"广州","enUS":"Guangzhou","zhTW":"廣州"},"districtList":[{"uuid":"a22655fe-5c79-11eb-ab01-0242ac110002","cityUuid":"1722c1d6-9f1d-11e8-ab41-1202be33576a","nameI18n":{"zhCN":"越秀区","enUS":"yuexiuqu","zhTW":"越秀区"}},{"uuid":"a2265fda-5c79-11eb-ab01-0242ac110002","cityUuid":"1722c1d6-9f1d-11e8-ab41-1202be33576a","nameI18n":{"zhCN":"天河区","enUS":"tianhequ","zhTW":"天河区"}}],"status":"OPENING","openAt":"2019-01-01T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":5,"openingBuildingCount":5,"currencyType":"CNY","image":{"uuid":"b387fd83-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/1722c1d6-9f1d-11e8-ab41-1202be33576a.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":2},{"uuid":"b7fae85c-591f-11e8-b904-1202be33576a","nameI18n":{"zhCN":"杭州","enUS":"Hangzhou","zhTW":"杭州"},"districtList":[{"uuid":"a2263d40-5c79-11eb-ab01-0242ac110002","cityUuid":"b7fae85c-591f-11e8-b904-1202be33576a","nameI18n":{"zhCN":"上城区","enUS":"shangchengqu","zhTW":"上城区"}},{"uuid":"a2265859-5c79-11eb-ab01-0242ac110002","cityUuid":"b7fae85c-591f-11e8-b904-1202be33576a","nameI18n":{"zhCN":"西湖区","enUS":"xihuqu","zhTW":"西湖区"}},{"uuid":"a2265cfb-5c79-11eb-ab01-0242ac110002","cityUuid":"b7fae85c-591f-11e8-b904-1202be33576a","nameI18n":{"zhCN":"下城区","enUS":"xiachengqu","zhTW":"下城区"}},{"uuid":"a22665b8-5c79-11eb-ab01-0242ac110002","cityUuid":"b7fae85c-591f-11e8-b904-1202be33576a","nameI18n":{"zhCN":"江干区","enUS":"江干区","zhTW":"江干区"}}],"status":"OPENING","openAt":"2018-10-08T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":6,"openingBuildingCount":6,"currencyType":"CNY","image":{"uuid":"b388074b-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/b7fae85c-591f-11e8-b904-1202be33576a.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":4},{"uuid":"d0debd32-70c4-11e8-8f42-1202be33576a","nameI18n":{"zhCN":"深圳","enUS":"Shenzhen","zhTW":"深圳"},"districtList":[{"uuid":"a2263bec-5c79-11eb-ab01-0242ac110002","cityUuid":"d0debd32-70c4-11e8-8f42-1202be33576a","nameI18n":{"zhCN":"南山区","enUS":"nanshanqu","zhTW":"南山区"}},{"uuid":"a2265536-5c79-11eb-ab01-0242ac110002","cityUuid":"d0debd32-70c4-11e8-8f42-1202be33576a","nameI18n":{"zhCN":"福田区","enUS":"futianqu","zhTW":"福田区"}}],"status":"OPENING","openAt":"2018-09-03T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":8,"openingBuildingCount":8,"currencyType":"CNY","image":{"uuid":"b3880c0f-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/d0debd32-70c4-11e8-8f42-1202be33576a.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":2},{"uuid":"35da2f60-7583-11e8-8b3e-1202be33576a","nameI18n":{"zhCN":"成都","enUS":"Chengdu","zhTW":"成都"},"districtList":[{"uuid":"a2263c6c-5c79-11eb-ab01-0242ac110002","cityUuid":"35da2f60-7583-11e8-8b3e-1202be33576a","nameI18n":{"zhCN":"锦江区","enUS":"jinjiangqu","zhTW":"锦江区"}},{"uuid":"a2263ed0-5c79-11eb-ab01-0242ac110002","cityUuid":"35da2f60-7583-11e8-8b3e-1202be33576a","nameI18n":{"zhCN":"青羊区","enUS":"qingyangqu","zhTW":"青羊区"}},{"uuid":"a2265793-5c79-11eb-ab01-0242ac110002","cityUuid":"35da2f60-7583-11e8-8b3e-1202be33576a","nameI18n":{"zhCN":"武侯区","enUS":"wuhouqu","zhTW":"武侯区"}}],"status":"OPENING","openAt":"2018-09-01T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":6,"openingBuildingCount":6,"currencyType":"CNY","image":{"uuid":"b3880120-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/35da2f60-7583-11e8-8b3e-1202be33576a.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":3},{"uuid":"4626d4f9-5157-43c5-8fa8-f7436674a03c","nameI18n":{"zhCN":"北京","enUS":"Beijing","zhTW":"北京"},"districtList":[{"uuid":"a2263727-5c79-11eb-ab01-0242ac110002","cityUuid":"4626d4f9-5157-43c5-8fa8-f7436674a03c","nameI18n":{"zhCN":"朝阳区","enUS":"chaoyangqu","zhTW":"朝阳区"}},{"uuid":"a2263a6c-5c79-11eb-ab01-0242ac110002","cityUuid":"4626d4f9-5157-43c5-8fa8-f7436674a03c","nameI18n":{"zhCN":"海淀区","enUS":"haidianqu","zhTW":"海淀区"}},{"uuid":"a2263b31-5c79-11eb-ab01-0242ac110002","cityUuid":"4626d4f9-5157-43c5-8fa8-f7436674a03c","nameI18n":{"zhCN":"西城区","enUS":"xichengqu","zhTW":"西城区"}},{"uuid":"a2263e06-5c79-11eb-ab01-0242ac110002","cityUuid":"4626d4f9-5157-43c5-8fa8-f7436674a03c","nameI18n":{"zhCN":"东城区","enUS":"dongchengqu","zhTW":"东城区"}}],"status":"OPENING","openAt":"2017-04-01T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":27,"openingBuildingCount":27,"currencyType":"CNY","image":{"uuid":"b38804e3-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/4626d4f9-5157-43c5-8fa8-f7436674a03c.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":4},{"uuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"香港","enUS":"Hong Kong","zhTW":"香港"},"districtList":[{"uuid":"a2264bf5-5c79-11eb-ab01-0242ac110002","cityUuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"铜锣湾","enUS":"tongluowan","zhTW":"铜锣湾"}},{"uuid":"a2265052-5c79-11eb-ab01-0242ac110002","cityUuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"湾仔","enUS":"wanzai","zhTW":"湾仔"}},{"uuid":"a22651db-5c79-11eb-ab01-0242ac110002","cityUuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"鰂鱼涌","enUS":"zeiyuchong","zhTW":"鰂鱼涌"}},{"uuid":"a226546c-5c79-11eb-ab01-0242ac110002","cityUuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"中环","enUS":"zhonghuan","zhTW":"中环"}},{"uuid":"a2265a83-5c79-11eb-ab01-0242ac110002","cityUuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"西营盘","enUS":"xiyingpan","zhTW":"西营盘"}},{"uuid":"a2265bca-5c79-11eb-ab01-0242ac110002","cityUuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"中西区","enUS":"zhongxiqu","zhTW":"中西区"}},{"uuid":"a2265c7a-5c79-11eb-ab01-0242ac110002","cityUuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"观塘","enUS":"guantang","zhTW":"观塘"}},{"uuid":"a226667d-5c79-11eb-ab01-0242ac110002","cityUuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"尖沙咀","enUS":"尖沙咀","zhTW":"尖沙咀"}},{"uuid":"a226673f-5c79-11eb-ab01-0242ac110002","cityUuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"九龙湾","enUS":"九龙湾","zhTW":"九龙湾"}}],"status":"OPENING","openAt":"2016-09-01T00:00:00+08:00","regionUuid":"73581d48-6ad3-11e9-bd85-0ec6db7d2a3c","totalBuildingCount":18,"openingBuildingCount":18,"currencyType":"HKD","image":{"uuid":"b38809aa-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/be16956c-bd23-4015-89f2-132812e07005.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":9},{"uuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"上海","enUS":"Shanghai","zhTW":"上海"},"districtList":[{"uuid":"a22633de-5c79-11eb-ab01-0242ac110002","cityUuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"黄浦区","enUS":"huangpuqu","zhTW":"黄浦区"}},{"uuid":"a2263589-5c79-11eb-ab01-0242ac110002","cityUuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"静安区","enUS":"jinganqu","zhTW":"静安区"}},{"uuid":"a2263804-5c79-11eb-ab01-0242ac110002","cityUuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"徐汇区","enUS":"xuhuiqu","zhTW":"徐汇区"}},{"uuid":"a22638d2-5c79-11eb-ab01-0242ac110002","cityUuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"浦东新区","enUS":"pudongxinqu","zhTW":"浦东新区"}},{"uuid":"a226399d-5c79-11eb-ab01-0242ac110002","cityUuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"杨浦区","enUS":"yangpuqu","zhTW":"杨浦区"}},{"uuid":"a2264b4c-5c79-11eb-ab01-0242ac110002","cityUuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"虹口区","enUS":"hongkouqu","zhTW":"虹口区"}},{"uuid":"a226591f-5c79-11eb-ab01-0242ac110002","cityUuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"闵行区","enUS":"minhangqu","zhTW":"闵行区"}},{"uuid":"a22659e3-5c79-11eb-ab01-0242ac110002","cityUuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"普陀区","enUS":"putuoqu","zhTW":"普陀区"}},{"uuid":"a2265aff-5c79-11eb-ab01-0242ac110002","cityUuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"长宁区","enUS":"changningqu","zhTW":"长宁区"}}],"status":"OPENING","openAt":"2015-12-01T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":57,"openingBuildingCount":57,"currencyType":"CNY","image":{"uuid":"b388087c-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/bcccbdcd-9a23-4586-81cd-378d9e2cbae5.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":9}]}', 'check_result': True, 'message': ''}]
+[]
+
+
+        </pre>
+        </div>
+        </td>
+        <td class='passCase' style="vertical-align: middle"></td>
+    </tr>
+    
+<tr class='passClass warning'>
+    <td>APITest_4</td>
+    <td></td>
+    <td class="text-center">1</td>
+    <td class="text-center">1</td>
+    <td class="text-center">0</td>
+    <td class="text-center">0</td>
+    <td class="text-center">0.27秒</td>
+    <td class="text-center"><a href="javascript:showClassDetail('c5',1)" class="detail" id='c5'>详细</a></td>
+</tr>
+
+    <tr id='pt5_1' class='hiddenRow'>
+        <td class='passCase' style="vertical-align: middle"><div class='testcase'>case05</div></td>
+        <td style="vertical-align: middle">获取城市列表</td>
+        <td colspan='5' align='center'>
+        <!--默认收起错误信息 -Findyou
+        <button id='btn_pt5_1' type="button"  class="btn btn-xs collapsed" data-toggle="collapse" data-target='#div_pt5_1'>通过</button>
+        <div id='div_pt5_1' class="collapse">  -->
+
+        <!-- 默认展开错误信息 -Findyou /  修复失败按钮的颜色 -- Gelomen -->
+        <button id='btn_pt5_1' type="button"  class="btn btn-xs" data-toggle="collapse" data-target='#div_pt5_1'>通过</button>
+        <div id='div_pt5_1' class="collapse in">
+        <pre style="text-align:left">
+        
+pt5_1: [{'code': 0, 'response_reason': '', 'response_code': 200, 'response_headers': {'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'traceId': '59447540-4965-45e8-98b9-4b8d3c066a2e, 59447540-4965-45e8-98b9-4b8d3c066a2e', 'Date': 'Thu, 18 Feb 2021 05:03:18 GMT', 'Access-Control-Allow-Origin': '*', 'Access-Control-Expose-Headers': 'token,locale,Authorization,client-type', 'X-Kong-Upstream-Latency': '126', 'X-Kong-Proxy-Latency': '0', 'Via': 'kong/1.4.3'}, 'response_body': '{"code":0,"data":[{"uuid":"3dfd93c4-4a55-11e9-bca7-0ec6db7d2a3c","nameI18n":{"zhCN":"南京市","enUS":"Nanjing","zhTW":"南京"},"districtList":[{"uuid":"a226642a-5c79-11eb-ab01-0242ac110002","cityUuid":"3dfd93c4-4a55-11e9-bca7-0ec6db7d2a3c","nameI18n":{"zhCN":"建邺区","enUS":"建邺区","zhTW":"建邺区"}},{"uuid":"a22668cd-5c79-11eb-ab01-0242ac110002","cityUuid":"3dfd93c4-4a55-11e9-bca7-0ec6db7d2a3c","nameI18n":{"zhCN":"秦淮区","enUS":"秦淮区","zhTW":"秦淮区"}}],"status":"OPENING","openAt":"2019-12-30T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":3,"openingBuildingCount":3,"currencyType":"CNY","image":{"uuid":"b388039c-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/3dfd93c4-4a55-11e9-bca7-0ec6db7d2a3c.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":2},{"uuid":"c22c32c2-cbe8-11e8-900c-1202be33576a","nameI18n":{"zhCN":"苏州","enUS":"Suzhou","zhTW":"蘇州"},"districtList":[{"uuid":"a226629f-5c79-11eb-ab01-0242ac110002","cityUuid":"c22c32c2-cbe8-11e8-900c-1202be33576a","nameI18n":{"zhCN":"工业园区","enUS":"gongyeyuanuq","zhTW":"工业园区"}}],"status":"OPENING","openAt":"2019-08-01T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":1,"openingBuildingCount":1,"currencyType":"CNY","image":{"uuid":"b3880ade-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/c22c32c2-cbe8-11e8-900c-1202be33576a.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":1},{"uuid":"1bdaea76-4a55-11e9-8d49-0ec6db7d2a3c","nameI18n":{"zhCN":"台北","enUS":"Taipei","zhTW":"台北"},"districtList":[{"uuid":"a2266367-5c79-11eb-ab01-0242ac110002","cityUuid":"1bdaea76-4a55-11e9-8d49-0ec6db7d2a3c","nameI18n":{"zhCN":"信义区","enUS":"信义区","zhTW":"信义区"}}],"status":"OPENING","openAt":"2019-07-15T00:00:00+08:00","regionUuid":"8edf34c2-31b8-11e6-85d9-0a488af3e541","totalBuildingCount":1,"openingBuildingCount":1,"currencyType":"TWD","image":{"uuid":"b387ffcf-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/1bdaea76-4a55-11e9-8d49-0ec6db7d2a3c.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":1},{"uuid":"6169b3a6-4041-11e9-85c5-1202be33576a","nameI18n":{"zhCN":"西安","enUS":"Xi\'an","zhTW":"西安"},"districtList":[{"uuid":"a2266114-5c79-11eb-ab01-0242ac110002","cityUuid":"6169b3a6-4041-11e9-85c5-1202be33576a","nameI18n":{"zhCN":"碑林区","enUS":"beilinqu","zhTW":"碑林区"}},{"uuid":"a22664f4-5c79-11eb-ab01-0242ac110002","cityUuid":"6169b3a6-4041-11e9-85c5-1202be33576a","nameI18n":{"zhCN":"未央区","enUS":"未央区","zhTW":"未央区"}},{"uuid":"a226680a-5c79-11eb-ab01-0242ac110002","cityUuid":"6169b3a6-4041-11e9-85c5-1202be33576a","nameI18n":{"zhCN":"曲江新区","enUS":"曲江新区","zhTW":"曲江新区"}}],"status":"OPENING","openAt":"2019-07-01T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":3,"openingBuildingCount":3,"currencyType":"CNY","image":{"uuid":"b388061b-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/6169b3a6-4041-11e9-85c5-1202be33576a.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":3},{"uuid":"f4deee90-cbe7-11e8-872a-1202be33576a","nameI18n":{"zhCN":"武汉","enUS":"Wuhan","zhTW":"武漢"},"districtList":[{"uuid":"a22656c8-5c79-11eb-ab01-0242ac110002","cityUuid":"f4deee90-cbe7-11e8-872a-1202be33576a","nameI18n":{"zhCN":"江汉区","enUS":"jianghanqu","zhTW":"江汉区"}},{"uuid":"a22661d7-5c79-11eb-ab01-0242ac110002","cityUuid":"f4deee90-cbe7-11e8-872a-1202be33576a","nameI18n":{"zhCN":"洪山区","enUS":"hongshanqu","zhTW":"洪山区"}}],"status":"OPENING","openAt":"2019-01-28T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":2,"openingBuildingCount":2,"currencyType":"CNY","image":{"uuid":"b3880d42-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/f4deee90-cbe7-11e8-872a-1202be33576a.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":2},{"uuid":"1722c1d6-9f1d-11e8-ab41-1202be33576a","nameI18n":{"zhCN":"广州","enUS":"Guangzhou","zhTW":"廣州"},"districtList":[{"uuid":"a22655fe-5c79-11eb-ab01-0242ac110002","cityUuid":"1722c1d6-9f1d-11e8-ab41-1202be33576a","nameI18n":{"zhCN":"越秀区","enUS":"yuexiuqu","zhTW":"越秀区"}},{"uuid":"a2265fda-5c79-11eb-ab01-0242ac110002","cityUuid":"1722c1d6-9f1d-11e8-ab41-1202be33576a","nameI18n":{"zhCN":"天河区","enUS":"tianhequ","zhTW":"天河区"}}],"status":"OPENING","openAt":"2019-01-01T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":5,"openingBuildingCount":5,"currencyType":"CNY","image":{"uuid":"b387fd83-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/1722c1d6-9f1d-11e8-ab41-1202be33576a.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":2},{"uuid":"b7fae85c-591f-11e8-b904-1202be33576a","nameI18n":{"zhCN":"杭州","enUS":"Hangzhou","zhTW":"杭州"},"districtList":[{"uuid":"a2263d40-5c79-11eb-ab01-0242ac110002","cityUuid":"b7fae85c-591f-11e8-b904-1202be33576a","nameI18n":{"zhCN":"上城区","enUS":"shangchengqu","zhTW":"上城区"}},{"uuid":"a2265859-5c79-11eb-ab01-0242ac110002","cityUuid":"b7fae85c-591f-11e8-b904-1202be33576a","nameI18n":{"zhCN":"西湖区","enUS":"xihuqu","zhTW":"西湖区"}},{"uuid":"a2265cfb-5c79-11eb-ab01-0242ac110002","cityUuid":"b7fae85c-591f-11e8-b904-1202be33576a","nameI18n":{"zhCN":"下城区","enUS":"xiachengqu","zhTW":"下城区"}},{"uuid":"a22665b8-5c79-11eb-ab01-0242ac110002","cityUuid":"b7fae85c-591f-11e8-b904-1202be33576a","nameI18n":{"zhCN":"江干区","enUS":"江干区","zhTW":"江干区"}}],"status":"OPENING","openAt":"2018-10-08T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":6,"openingBuildingCount":6,"currencyType":"CNY","image":{"uuid":"b388074b-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/b7fae85c-591f-11e8-b904-1202be33576a.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":4},{"uuid":"d0debd32-70c4-11e8-8f42-1202be33576a","nameI18n":{"zhCN":"深圳","enUS":"Shenzhen","zhTW":"深圳"},"districtList":[{"uuid":"a2263bec-5c79-11eb-ab01-0242ac110002","cityUuid":"d0debd32-70c4-11e8-8f42-1202be33576a","nameI18n":{"zhCN":"南山区","enUS":"nanshanqu","zhTW":"南山区"}},{"uuid":"a2265536-5c79-11eb-ab01-0242ac110002","cityUuid":"d0debd32-70c4-11e8-8f42-1202be33576a","nameI18n":{"zhCN":"福田区","enUS":"futianqu","zhTW":"福田区"}}],"status":"OPENING","openAt":"2018-09-03T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":8,"openingBuildingCount":8,"currencyType":"CNY","image":{"uuid":"b3880c0f-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/d0debd32-70c4-11e8-8f42-1202be33576a.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":2},{"uuid":"35da2f60-7583-11e8-8b3e-1202be33576a","nameI18n":{"zhCN":"成都","enUS":"Chengdu","zhTW":"成都"},"districtList":[{"uuid":"a2263c6c-5c79-11eb-ab01-0242ac110002","cityUuid":"35da2f60-7583-11e8-8b3e-1202be33576a","nameI18n":{"zhCN":"锦江区","enUS":"jinjiangqu","zhTW":"锦江区"}},{"uuid":"a2263ed0-5c79-11eb-ab01-0242ac110002","cityUuid":"35da2f60-7583-11e8-8b3e-1202be33576a","nameI18n":{"zhCN":"青羊区","enUS":"qingyangqu","zhTW":"青羊区"}},{"uuid":"a2265793-5c79-11eb-ab01-0242ac110002","cityUuid":"35da2f60-7583-11e8-8b3e-1202be33576a","nameI18n":{"zhCN":"武侯区","enUS":"wuhouqu","zhTW":"武侯区"}}],"status":"OPENING","openAt":"2018-09-01T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":6,"openingBuildingCount":6,"currencyType":"CNY","image":{"uuid":"b3880120-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/35da2f60-7583-11e8-8b3e-1202be33576a.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":3},{"uuid":"4626d4f9-5157-43c5-8fa8-f7436674a03c","nameI18n":{"zhCN":"北京","enUS":"Beijing","zhTW":"北京"},"districtList":[{"uuid":"a2263727-5c79-11eb-ab01-0242ac110002","cityUuid":"4626d4f9-5157-43c5-8fa8-f7436674a03c","nameI18n":{"zhCN":"朝阳区","enUS":"chaoyangqu","zhTW":"朝阳区"}},{"uuid":"a2263a6c-5c79-11eb-ab01-0242ac110002","cityUuid":"4626d4f9-5157-43c5-8fa8-f7436674a03c","nameI18n":{"zhCN":"海淀区","enUS":"haidianqu","zhTW":"海淀区"}},{"uuid":"a2263b31-5c79-11eb-ab01-0242ac110002","cityUuid":"4626d4f9-5157-43c5-8fa8-f7436674a03c","nameI18n":{"zhCN":"西城区","enUS":"xichengqu","zhTW":"西城区"}},{"uuid":"a2263e06-5c79-11eb-ab01-0242ac110002","cityUuid":"4626d4f9-5157-43c5-8fa8-f7436674a03c","nameI18n":{"zhCN":"东城区","enUS":"dongchengqu","zhTW":"东城区"}}],"status":"OPENING","openAt":"2017-04-01T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":27,"openingBuildingCount":27,"currencyType":"CNY","image":{"uuid":"b38804e3-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/4626d4f9-5157-43c5-8fa8-f7436674a03c.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":4},{"uuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"香港","enUS":"Hong Kong","zhTW":"香港"},"districtList":[{"uuid":"a2264bf5-5c79-11eb-ab01-0242ac110002","cityUuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"铜锣湾","enUS":"tongluowan","zhTW":"铜锣湾"}},{"uuid":"a2265052-5c79-11eb-ab01-0242ac110002","cityUuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"湾仔","enUS":"wanzai","zhTW":"湾仔"}},{"uuid":"a22651db-5c79-11eb-ab01-0242ac110002","cityUuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"鰂鱼涌","enUS":"zeiyuchong","zhTW":"鰂鱼涌"}},{"uuid":"a226546c-5c79-11eb-ab01-0242ac110002","cityUuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"中环","enUS":"zhonghuan","zhTW":"中环"}},{"uuid":"a2265a83-5c79-11eb-ab01-0242ac110002","cityUuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"西营盘","enUS":"xiyingpan","zhTW":"西营盘"}},{"uuid":"a2265bca-5c79-11eb-ab01-0242ac110002","cityUuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"中西区","enUS":"zhongxiqu","zhTW":"中西区"}},{"uuid":"a2265c7a-5c79-11eb-ab01-0242ac110002","cityUuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"观塘","enUS":"guantang","zhTW":"观塘"}},{"uuid":"a226667d-5c79-11eb-ab01-0242ac110002","cityUuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"尖沙咀","enUS":"尖沙咀","zhTW":"尖沙咀"}},{"uuid":"a226673f-5c79-11eb-ab01-0242ac110002","cityUuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"九龙湾","enUS":"九龙湾","zhTW":"九龙湾"}}],"status":"OPENING","openAt":"2016-09-01T00:00:00+08:00","regionUuid":"73581d48-6ad3-11e9-bd85-0ec6db7d2a3c","totalBuildingCount":18,"openingBuildingCount":18,"currencyType":"HKD","image":{"uuid":"b38809aa-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/be16956c-bd23-4015-89f2-132812e07005.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":9},{"uuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"上海","enUS":"Shanghai","zhTW":"上海"},"districtList":[{"uuid":"a22633de-5c79-11eb-ab01-0242ac110002","cityUuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"黄浦区","enUS":"huangpuqu","zhTW":"黄浦区"}},{"uuid":"a2263589-5c79-11eb-ab01-0242ac110002","cityUuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"静安区","enUS":"jinganqu","zhTW":"静安区"}},{"uuid":"a2263804-5c79-11eb-ab01-0242ac110002","cityUuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"徐汇区","enUS":"xuhuiqu","zhTW":"徐汇区"}},{"uuid":"a22638d2-5c79-11eb-ab01-0242ac110002","cityUuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"浦东新区","enUS":"pudongxinqu","zhTW":"浦东新区"}},{"uuid":"a226399d-5c79-11eb-ab01-0242ac110002","cityUuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"杨浦区","enUS":"yangpuqu","zhTW":"杨浦区"}},{"uuid":"a2264b4c-5c79-11eb-ab01-0242ac110002","cityUuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"虹口区","enUS":"hongkouqu","zhTW":"虹口区"}},{"uuid":"a226591f-5c79-11eb-ab01-0242ac110002","cityUuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"闵行区","enUS":"minhangqu","zhTW":"闵行区"}},{"uuid":"a22659e3-5c79-11eb-ab01-0242ac110002","cityUuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"普陀区","enUS":"putuoqu","zhTW":"普陀区"}},{"uuid":"a2265aff-5c79-11eb-ab01-0242ac110002","cityUuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"长宁区","enUS":"changningqu","zhTW":"长宁区"}}],"status":"OPENING","openAt":"2015-12-01T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":57,"openingBuildingCount":57,"currencyType":"CNY","image":{"uuid":"b388087c-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/bcccbdcd-9a23-4586-81cd-378d9e2cbae5.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":9}]}', 'check_result': True, 'message': ''}]
+[]
+
+
+        </pre>
+        </div>
+        </td>
+        <td class='passCase' style="vertical-align: middle"></td>
+    </tr>
+    
+<tr class='passClass warning'>
+    <td>APITest_5</td>
+    <td></td>
+    <td class="text-center">1</td>
+    <td class="text-center">1</td>
+    <td class="text-center">0</td>
+    <td class="text-center">0</td>
+    <td class="text-center">0.21秒</td>
+    <td class="text-center"><a href="javascript:showClassDetail('c6',1)" class="detail" id='c6'>详细</a></td>
+</tr>
+
+    <tr id='pt6_1' class='hiddenRow'>
+        <td class='passCase' style="vertical-align: middle"><div class='testcase'>case06</div></td>
+        <td style="vertical-align: middle">获取城市列表</td>
+        <td colspan='5' align='center'>
+        <!--默认收起错误信息 -Findyou
+        <button id='btn_pt6_1' type="button"  class="btn btn-xs collapsed" data-toggle="collapse" data-target='#div_pt6_1'>通过</button>
+        <div id='div_pt6_1' class="collapse">  -->
+
+        <!-- 默认展开错误信息 -Findyou /  修复失败按钮的颜色 -- Gelomen -->
+        <button id='btn_pt6_1' type="button"  class="btn btn-xs" data-toggle="collapse" data-target='#div_pt6_1'>通过</button>
+        <div id='div_pt6_1' class="collapse in">
+        <pre style="text-align:left">
+        
+pt6_1: [{'code': 0, 'response_reason': '', 'response_code': 200, 'response_headers': {'Content-Type': 'application/json;charset=UTF-8', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'traceId': '8faaf5d2-6881-4987-a86c-1c99b2f4ce4d, 8faaf5d2-6881-4987-a86c-1c99b2f4ce4d', 'Date': 'Thu, 18 Feb 2021 05:03:18 GMT', 'Access-Control-Allow-Origin': '*', 'Access-Control-Expose-Headers': 'token,locale,Authorization,client-type', 'X-Kong-Upstream-Latency': '90', 'X-Kong-Proxy-Latency': '1', 'Via': 'kong/1.4.3'}, 'response_body': '{"code":0,"data":[{"uuid":"3dfd93c4-4a55-11e9-bca7-0ec6db7d2a3c","nameI18n":{"zhCN":"南京市","enUS":"Nanjing","zhTW":"南京"},"districtList":[{"uuid":"a226642a-5c79-11eb-ab01-0242ac110002","cityUuid":"3dfd93c4-4a55-11e9-bca7-0ec6db7d2a3c","nameI18n":{"zhCN":"建邺区","enUS":"建邺区","zhTW":"建邺区"}},{"uuid":"a22668cd-5c79-11eb-ab01-0242ac110002","cityUuid":"3dfd93c4-4a55-11e9-bca7-0ec6db7d2a3c","nameI18n":{"zhCN":"秦淮区","enUS":"秦淮区","zhTW":"秦淮区"}}],"status":"OPENING","openAt":"2019-12-30T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":3,"openingBuildingCount":3,"currencyType":"CNY","image":{"uuid":"b388039c-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/3dfd93c4-4a55-11e9-bca7-0ec6db7d2a3c.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":2},{"uuid":"c22c32c2-cbe8-11e8-900c-1202be33576a","nameI18n":{"zhCN":"苏州","enUS":"Suzhou","zhTW":"蘇州"},"districtList":[{"uuid":"a226629f-5c79-11eb-ab01-0242ac110002","cityUuid":"c22c32c2-cbe8-11e8-900c-1202be33576a","nameI18n":{"zhCN":"工业园区","enUS":"gongyeyuanuq","zhTW":"工业园区"}}],"status":"OPENING","openAt":"2019-08-01T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":1,"openingBuildingCount":1,"currencyType":"CNY","image":{"uuid":"b3880ade-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/c22c32c2-cbe8-11e8-900c-1202be33576a.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":1},{"uuid":"1bdaea76-4a55-11e9-8d49-0ec6db7d2a3c","nameI18n":{"zhCN":"台北","enUS":"Taipei","zhTW":"台北"},"districtList":[{"uuid":"a2266367-5c79-11eb-ab01-0242ac110002","cityUuid":"1bdaea76-4a55-11e9-8d49-0ec6db7d2a3c","nameI18n":{"zhCN":"信义区","enUS":"信义区","zhTW":"信义区"}}],"status":"OPENING","openAt":"2019-07-15T00:00:00+08:00","regionUuid":"8edf34c2-31b8-11e6-85d9-0a488af3e541","totalBuildingCount":1,"openingBuildingCount":1,"currencyType":"TWD","image":{"uuid":"b387ffcf-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/1bdaea76-4a55-11e9-8d49-0ec6db7d2a3c.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":1},{"uuid":"6169b3a6-4041-11e9-85c5-1202be33576a","nameI18n":{"zhCN":"西安","enUS":"Xi\'an","zhTW":"西安"},"districtList":[{"uuid":"a2266114-5c79-11eb-ab01-0242ac110002","cityUuid":"6169b3a6-4041-11e9-85c5-1202be33576a","nameI18n":{"zhCN":"碑林区","enUS":"beilinqu","zhTW":"碑林区"}},{"uuid":"a22664f4-5c79-11eb-ab01-0242ac110002","cityUuid":"6169b3a6-4041-11e9-85c5-1202be33576a","nameI18n":{"zhCN":"未央区","enUS":"未央区","zhTW":"未央区"}},{"uuid":"a226680a-5c79-11eb-ab01-0242ac110002","cityUuid":"6169b3a6-4041-11e9-85c5-1202be33576a","nameI18n":{"zhCN":"曲江新区","enUS":"曲江新区","zhTW":"曲江新区"}}],"status":"OPENING","openAt":"2019-07-01T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":3,"openingBuildingCount":3,"currencyType":"CNY","image":{"uuid":"b388061b-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/6169b3a6-4041-11e9-85c5-1202be33576a.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":3},{"uuid":"f4deee90-cbe7-11e8-872a-1202be33576a","nameI18n":{"zhCN":"武汉","enUS":"Wuhan","zhTW":"武漢"},"districtList":[{"uuid":"a22656c8-5c79-11eb-ab01-0242ac110002","cityUuid":"f4deee90-cbe7-11e8-872a-1202be33576a","nameI18n":{"zhCN":"江汉区","enUS":"jianghanqu","zhTW":"江汉区"}},{"uuid":"a22661d7-5c79-11eb-ab01-0242ac110002","cityUuid":"f4deee90-cbe7-11e8-872a-1202be33576a","nameI18n":{"zhCN":"洪山区","enUS":"hongshanqu","zhTW":"洪山区"}}],"status":"OPENING","openAt":"2019-01-28T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":2,"openingBuildingCount":2,"currencyType":"CNY","image":{"uuid":"b3880d42-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/f4deee90-cbe7-11e8-872a-1202be33576a.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":2},{"uuid":"1722c1d6-9f1d-11e8-ab41-1202be33576a","nameI18n":{"zhCN":"广州","enUS":"Guangzhou","zhTW":"廣州"},"districtList":[{"uuid":"a22655fe-5c79-11eb-ab01-0242ac110002","cityUuid":"1722c1d6-9f1d-11e8-ab41-1202be33576a","nameI18n":{"zhCN":"越秀区","enUS":"yuexiuqu","zhTW":"越秀区"}},{"uuid":"a2265fda-5c79-11eb-ab01-0242ac110002","cityUuid":"1722c1d6-9f1d-11e8-ab41-1202be33576a","nameI18n":{"zhCN":"天河区","enUS":"tianhequ","zhTW":"天河区"}}],"status":"OPENING","openAt":"2019-01-01T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":5,"openingBuildingCount":5,"currencyType":"CNY","image":{"uuid":"b387fd83-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/1722c1d6-9f1d-11e8-ab41-1202be33576a.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":2},{"uuid":"b7fae85c-591f-11e8-b904-1202be33576a","nameI18n":{"zhCN":"杭州","enUS":"Hangzhou","zhTW":"杭州"},"districtList":[{"uuid":"a2263d40-5c79-11eb-ab01-0242ac110002","cityUuid":"b7fae85c-591f-11e8-b904-1202be33576a","nameI18n":{"zhCN":"上城区","enUS":"shangchengqu","zhTW":"上城区"}},{"uuid":"a2265859-5c79-11eb-ab01-0242ac110002","cityUuid":"b7fae85c-591f-11e8-b904-1202be33576a","nameI18n":{"zhCN":"西湖区","enUS":"xihuqu","zhTW":"西湖区"}},{"uuid":"a2265cfb-5c79-11eb-ab01-0242ac110002","cityUuid":"b7fae85c-591f-11e8-b904-1202be33576a","nameI18n":{"zhCN":"下城区","enUS":"xiachengqu","zhTW":"下城区"}},{"uuid":"a22665b8-5c79-11eb-ab01-0242ac110002","cityUuid":"b7fae85c-591f-11e8-b904-1202be33576a","nameI18n":{"zhCN":"江干区","enUS":"江干区","zhTW":"江干区"}}],"status":"OPENING","openAt":"2018-10-08T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":6,"openingBuildingCount":6,"currencyType":"CNY","image":{"uuid":"b388074b-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/b7fae85c-591f-11e8-b904-1202be33576a.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":4},{"uuid":"d0debd32-70c4-11e8-8f42-1202be33576a","nameI18n":{"zhCN":"深圳","enUS":"Shenzhen","zhTW":"深圳"},"districtList":[{"uuid":"a2263bec-5c79-11eb-ab01-0242ac110002","cityUuid":"d0debd32-70c4-11e8-8f42-1202be33576a","nameI18n":{"zhCN":"南山区","enUS":"nanshanqu","zhTW":"南山区"}},{"uuid":"a2265536-5c79-11eb-ab01-0242ac110002","cityUuid":"d0debd32-70c4-11e8-8f42-1202be33576a","nameI18n":{"zhCN":"福田区","enUS":"futianqu","zhTW":"福田区"}}],"status":"OPENING","openAt":"2018-09-03T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":8,"openingBuildingCount":8,"currencyType":"CNY","image":{"uuid":"b3880c0f-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/d0debd32-70c4-11e8-8f42-1202be33576a.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":2},{"uuid":"35da2f60-7583-11e8-8b3e-1202be33576a","nameI18n":{"zhCN":"成都","enUS":"Chengdu","zhTW":"成都"},"districtList":[{"uuid":"a2263c6c-5c79-11eb-ab01-0242ac110002","cityUuid":"35da2f60-7583-11e8-8b3e-1202be33576a","nameI18n":{"zhCN":"锦江区","enUS":"jinjiangqu","zhTW":"锦江区"}},{"uuid":"a2263ed0-5c79-11eb-ab01-0242ac110002","cityUuid":"35da2f60-7583-11e8-8b3e-1202be33576a","nameI18n":{"zhCN":"青羊区","enUS":"qingyangqu","zhTW":"青羊区"}},{"uuid":"a2265793-5c79-11eb-ab01-0242ac110002","cityUuid":"35da2f60-7583-11e8-8b3e-1202be33576a","nameI18n":{"zhCN":"武侯区","enUS":"wuhouqu","zhTW":"武侯区"}}],"status":"OPENING","openAt":"2018-09-01T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":6,"openingBuildingCount":6,"currencyType":"CNY","image":{"uuid":"b3880120-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/35da2f60-7583-11e8-8b3e-1202be33576a.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":3},{"uuid":"4626d4f9-5157-43c5-8fa8-f7436674a03c","nameI18n":{"zhCN":"北京","enUS":"Beijing","zhTW":"北京"},"districtList":[{"uuid":"a2263727-5c79-11eb-ab01-0242ac110002","cityUuid":"4626d4f9-5157-43c5-8fa8-f7436674a03c","nameI18n":{"zhCN":"朝阳区","enUS":"chaoyangqu","zhTW":"朝阳区"}},{"uuid":"a2263a6c-5c79-11eb-ab01-0242ac110002","cityUuid":"4626d4f9-5157-43c5-8fa8-f7436674a03c","nameI18n":{"zhCN":"海淀区","enUS":"haidianqu","zhTW":"海淀区"}},{"uuid":"a2263b31-5c79-11eb-ab01-0242ac110002","cityUuid":"4626d4f9-5157-43c5-8fa8-f7436674a03c","nameI18n":{"zhCN":"西城区","enUS":"xichengqu","zhTW":"西城区"}},{"uuid":"a2263e06-5c79-11eb-ab01-0242ac110002","cityUuid":"4626d4f9-5157-43c5-8fa8-f7436674a03c","nameI18n":{"zhCN":"东城区","enUS":"dongchengqu","zhTW":"东城区"}}],"status":"OPENING","openAt":"2017-04-01T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":27,"openingBuildingCount":27,"currencyType":"CNY","image":{"uuid":"b38804e3-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/4626d4f9-5157-43c5-8fa8-f7436674a03c.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":4},{"uuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"香港","enUS":"Hong Kong","zhTW":"香港"},"districtList":[{"uuid":"a2264bf5-5c79-11eb-ab01-0242ac110002","cityUuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"铜锣湾","enUS":"tongluowan","zhTW":"铜锣湾"}},{"uuid":"a2265052-5c79-11eb-ab01-0242ac110002","cityUuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"湾仔","enUS":"wanzai","zhTW":"湾仔"}},{"uuid":"a22651db-5c79-11eb-ab01-0242ac110002","cityUuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"鰂鱼涌","enUS":"zeiyuchong","zhTW":"鰂鱼涌"}},{"uuid":"a226546c-5c79-11eb-ab01-0242ac110002","cityUuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"中环","enUS":"zhonghuan","zhTW":"中环"}},{"uuid":"a2265a83-5c79-11eb-ab01-0242ac110002","cityUuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"西营盘","enUS":"xiyingpan","zhTW":"西营盘"}},{"uuid":"a2265bca-5c79-11eb-ab01-0242ac110002","cityUuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"中西区","enUS":"zhongxiqu","zhTW":"中西区"}},{"uuid":"a2265c7a-5c79-11eb-ab01-0242ac110002","cityUuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"观塘","enUS":"guantang","zhTW":"观塘"}},{"uuid":"a226667d-5c79-11eb-ab01-0242ac110002","cityUuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"尖沙咀","enUS":"尖沙咀","zhTW":"尖沙咀"}},{"uuid":"a226673f-5c79-11eb-ab01-0242ac110002","cityUuid":"be16956c-bd23-4015-89f2-132812e07005","nameI18n":{"zhCN":"九龙湾","enUS":"九龙湾","zhTW":"九龙湾"}}],"status":"OPENING","openAt":"2016-09-01T00:00:00+08:00","regionUuid":"73581d48-6ad3-11e9-bd85-0ec6db7d2a3c","totalBuildingCount":18,"openingBuildingCount":18,"currencyType":"HKD","image":{"uuid":"b38809aa-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/be16956c-bd23-4015-89f2-132812e07005.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":9},{"uuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"上海","enUS":"Shanghai","zhTW":"上海"},"districtList":[{"uuid":"a22633de-5c79-11eb-ab01-0242ac110002","cityUuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"黄浦区","enUS":"huangpuqu","zhTW":"黄浦区"}},{"uuid":"a2263589-5c79-11eb-ab01-0242ac110002","cityUuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"静安区","enUS":"jinganqu","zhTW":"静安区"}},{"uuid":"a2263804-5c79-11eb-ab01-0242ac110002","cityUuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"徐汇区","enUS":"xuhuiqu","zhTW":"徐汇区"}},{"uuid":"a22638d2-5c79-11eb-ab01-0242ac110002","cityUuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"浦东新区","enUS":"pudongxinqu","zhTW":"浦东新区"}},{"uuid":"a226399d-5c79-11eb-ab01-0242ac110002","cityUuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"杨浦区","enUS":"yangpuqu","zhTW":"杨浦区"}},{"uuid":"a2264b4c-5c79-11eb-ab01-0242ac110002","cityUuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"虹口区","enUS":"hongkouqu","zhTW":"虹口区"}},{"uuid":"a226591f-5c79-11eb-ab01-0242ac110002","cityUuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"闵行区","enUS":"minhangqu","zhTW":"闵行区"}},{"uuid":"a22659e3-5c79-11eb-ab01-0242ac110002","cityUuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"普陀区","enUS":"putuoqu","zhTW":"普陀区"}},{"uuid":"a2265aff-5c79-11eb-ab01-0242ac110002","cityUuid":"bcccbdcd-9a23-4586-81cd-378d9e2cbae5","nameI18n":{"zhCN":"长宁区","enUS":"changningqu","zhTW":"长宁区"}}],"status":"OPENING","openAt":"2015-12-01T00:00:00+08:00","regionUuid":"a59a8618-1ea7-11e6-ab4a-0a488af3e541","totalBuildingCount":57,"openingBuildingCount":57,"currencyType":"CNY","image":{"uuid":"b388087c-5c79-11eb-ab01-0242ac110002","type":"CITY_AVATAR","url":"https://wework-chinaos-dev.oss-cn-shanghai.aliyuncs.com/bis-img-migration/city/bcccbdcd-9a23-4586-81cd-378d9e2cbae5.jpg","updateTime":"2021-01-22T06:18:53+08:00"},"districtCount":9}]}', 'check_result': True, 'message': ''}]
+[]
+
+
+        </pre>
+        </div>
+        </td>
+        <td class='passCase' style="vertical-align: middle"></td>
+    </tr>
+    
+<tr id='total_row' class="text-center active">
+    <td colspan='2'>总计</td>
+    <td>6</td>
+    <td>6</td>
+    <td>0</td>
+    <td>0</td>
+    <td>1.65秒</td>
+    <td>通过率：100.00%</td>
+</tr>
+</table>
+
+<div id='ending'>&nbsp;</div>
+    <div id="toTop" style=" position:fixed;right:50px; bottom:30px; width:20px; height:20px;cursor:pointer; display: none">
+    <a><span class="glyphicon glyphicon-eject" style = "font-size:30px;" aria-hidden="true">
+    </span></a></div>
+    
+
+</body>
+</html>
